@@ -56,11 +56,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="..\..\Among Us\BepInEx\core\*.dll" />
-		<Reference Include="..\..\Among Us\BepInEx\interop\*.dll" />
+		<Reference Include="D:\SteamLibrary\steamapps\common\Among Us Nebula on the Ship\BepInEx\core\*.dll" />
+		<Reference Include="D:\SteamLibrary\steamapps\common\Among Us Nebula on the Ship\BepInEx\interop\*.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="NAudio" Version="2.2.1" />
 	  <PackageReference Include="NAudio.Core" Version="2.2.1" />
 	  <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
 	  <PackageReference Include="OpusDotNet" Version="1.0.3" />
@@ -68,8 +69,8 @@
 
 	<Target Name="CopyCustomContent" AfterTargets="AfterBuild">
 		<Message Text="Second occurrence" />
-		<Copy SourceFiles="bin\x86\Release\net6.0\Nebula.dll" DestinationFolder="$(AmongUsRelease)\" />
-		<Copy SourceFiles="bin\x86\Release\net6.0\Nebula.dll" DestinationFolder="$(AmongUsRelease)\Nebula\BepInEx\plugins\" />
-		<Copy SourceFiles="bin\x86\Release\net6.0\Nebula.dll" DestinationFolder="$(AmongUsPlugins)\" />
+		<Copy SourceFiles="bin\x86\Release\net6.0\Nebula.dll" DestinationFolder="D:\NebulaOnTheShip-Remake-Nova\" />
+		<Copy SourceFiles="bin\x86\Release\net6.0\Nebula.dll" DestinationFolder="D:\SteamLibrary\steamapps\common\Among Us Nebula on the Ship\BepInEx\plugins\" />
+		<Copy SourceFiles="bin\x86\Release\net6.0\Nebula.dll" DestinationFolder="D:\" />
 	</Target>
 </Project>

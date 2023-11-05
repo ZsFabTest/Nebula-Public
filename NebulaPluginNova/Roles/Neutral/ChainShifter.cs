@@ -99,7 +99,7 @@ public class ChainShifter : ConfigurableStandardRole
             var player = shiftTarget.GetModInfo();
 
             //会議終了時に死亡している相手とはシフトできない
-            if(player == null || player.IsDead) yield break;
+            if(player == null/* || player.IsDead*/) yield break;
             
             int[] targetArgument = new int[0];
             var targetRole = player.Role.Role;
@@ -147,7 +147,7 @@ public class ChainShifter : ConfigurableStandardRole
                 }
             }
 
-            yield return new WaitForSeconds(0.2f);
+            //yield return new WaitForSeconds(0.2f);
 
             yield break;
         }

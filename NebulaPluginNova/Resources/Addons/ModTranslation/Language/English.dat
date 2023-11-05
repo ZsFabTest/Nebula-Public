@@ -1,0 +1,19 @@
+#Roles
+
+"role.madman.name" : "Madman"
+"role.madman.short" : "Ma"
+"role.madman.blurb" : "Swap Your Role With Others By Killing Them"
+"options.role.madman.detail" : "Swap the role with others by killing them."
+"options.role.madman.killCooldown" : "Kill Cool Down"
+"options.role.madman.canBeGuess" : "Can Be Guess"
+
+"role.hitman.name" : "Hitman"
+"role.hitman.short" : "Hi"
+"role.hitman.blurb" : "Killing Spree!"
+"options.role.hitman.detail" : "Hitman have more than one knife."
+"options.role.hitman.killCoolDown" : "Kill Cool Down"
+"options.role.hitman.numOfKilling" : "Number Of Kills Per Kill"
+
+#Exiled
+
+"game.exile.roleText" : "%NAME% was the %ROLE%"

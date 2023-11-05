@@ -56,16 +56,16 @@ public class NebulaPlugin : BasePlugin
 {
     public const string AmongUsVersion = "2023.7.12";
     public const string PluginGuid = "jp.dreamingpig.amongus.nebula";
-    public const string PluginName = "NebulaOnTheShip";
-    public const string PluginVersion = "2.0.0";
+    public const string PluginName = "NebulaOnTheShip-Remake";
+    public const string PluginVersion = "1.1.0.0";
 
     public const bool IsSnapshot = false;
     //public const string VisualVersion = "v2.0";
-    public const string VisualVersion = "Snapshot 23.11.02a";
+    public const string VisualVersion = "Test Build 16";
     //public const string VisualVersion = "Mayor Debug";
 
-    public const int PluginEpoch = 101;
-    public const int PluginBuildNum = 1043;
+    public const int PluginEpoch = 100;
+    public const int PluginBuildNum = 1006;
 
     static public HttpClient HttpClient
     {
@@ -87,7 +87,7 @@ public class NebulaPlugin : BasePlugin
 
     public static string GetNebulaVersionString()
     {
-        return "NoS " + VisualVersion;
+        return "NoS-R " + VisualVersion;
     }
 
     public Harmony Harmony = new Harmony(PluginGuid);
@@ -192,7 +192,7 @@ public class NebulaPlugin : BasePlugin
 
         Harmony.PatchAll();
 
-        SetWindowText(FindWindow(null!, Application.productName),"Among Us w/ " + GetNebulaVersionString());
+        SetWindowText(FindWindow(null!, Application.productName),"Among Us " + GetNebulaVersionString());
 
         SceneManager.sceneLoaded += (UnityEngine.Events.UnityAction<Scene, LoadSceneMode>)((scene, loadMode) =>
         {

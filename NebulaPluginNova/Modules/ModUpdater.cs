@@ -92,7 +92,8 @@ public class ModUpdater
 
         private async Task UpdateAsync()
         {
-            string url = $"https://github.com/Dolly1016/Nebula/releases/download/{rawTag}/Nebula.dll";
+            string url = $"https://gh-proxy.com/https://github.com/ZsFabTest/Nebula-Public/releases/download/{rawTag}/Nebula.dll";
+            //https://gh-proxy.com/https://github.com/Dolly1016/Nebula/releases/download/s%2CSnapshot_23.11.02a%2C101%2C1043/Nebula.dll
             var response = await NebulaPlugin.HttpClient.GetAsync(url);
             if (response.StatusCode != HttpStatusCode.OK) return;
             var dllStream = await response.Content.ReadAsStreamAsync();
@@ -122,7 +123,7 @@ public class ModUpdater
         }
     }
 
-    static string GetTagsUrl(int page) => "https://api.github.com/repos/Dolly1016/Nebula/tags?per_page=100&page=" + (page);
+    static string GetTagsUrl(int page) => "https://api.github.com/repos/ZsFabTest/Nebula-public/tags?per_page=100&page=" + (page);
     private static async Task FetchAsync()
     {
         List<ReleasedInfo> releases = new();

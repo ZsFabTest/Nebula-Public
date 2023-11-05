@@ -297,11 +297,17 @@ public class PlayerModInfo : IRuntimePropertyHolder
     {
         myRole?.Inactivate();
 
+        bool state = MyControl.Data.IsDead;
+
+        //*
         if (role.RoleCategory == Roles.RoleCategory.ImpostorRole)
             DestroyableSingleton<RoleManager>.Instance.SetRole(MyControl, RoleTypes.Impostor);
         else
             DestroyableSingleton<RoleManager>.Instance.SetRole(MyControl, RoleTypes.Crewmate);
-        
+        //*/
+
+        if (state) MyControl.Die(DeathReason.Kill,false);
+
         myRole = role.CreateInstance(this, arguments);
 
         if(NebulaGameManager.Instance?.GameState == NebulaGameStates.Initialized)myRole.OnActivated();
@@ -407,6 +413,7 @@ public class PlayerModInfo : IRuntimePropertyHolder
         (message, isCalledByMe) =>
         {
             var player = NebulaGameManager.Instance!.RegisterPlayer(PlayerControl.AllPlayerControls.Find((Il2CppSystem.Predicate<PlayerControl>)(p => p.PlayerId == message.playerId)));
+            //var player = NebulaGameManager.Instance!.GetModPlayerInfo(message.playerId)!;
             if (message.isRole)
                 player.SetRole(Roles.Roles.AllRoles[message.assignableId], message.arguments);
             else

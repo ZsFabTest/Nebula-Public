@@ -137,3 +137,16 @@ public static class AirshipExileWrapUpPatch
         return false;
     }
 }
+
+[HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
+class ExileControllerBeginPatch
+{
+
+    public static void Postfix(ExileController __instance, [HarmonyArgument(0)] ref GameData.PlayerInfo exiled, [HarmonyArgument(1)] bool tie)
+    {
+        try{
+                var role = NebulaGameManager.Instance?.GetModPlayerInfo(exiled.PlayerId)?.Role;
+                if (role != null) __instance.completeString = Language.Translate("game.exile.roleText").Replace("%NAME%", exiled.PlayerName).Replace("%ROLE%", Language.Translate("role." + role.Role.LocalizedName + ".name"));
+        }catch(Exception e){ Debug.LogError(e.StackTrace); }
+    }
+}

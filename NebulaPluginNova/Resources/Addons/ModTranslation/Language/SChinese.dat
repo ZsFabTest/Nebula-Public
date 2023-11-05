@@ -1,0 +1,19 @@
+#Roles
+
+"role.madman.name" : "疯子"
+"role.madman.short" : "疯"
+"role.madman.blurb" : "通过击杀交换你的职业"
+"options.role.madman.detail" : "疯子通过击杀别人交换职业。"
+"options.role.madman.killCooldown" : "击杀冷却时间"
+"options.role.madman.canBeGuess" : "是否可以被猜测"
+
+"role.hitman.name" : "杀手"
+"role.hitman.short" : "杀"
+"role.hitman.blurb" : "杀戮盛宴！"
+"options.role.hitman.detail" : "杀手每次冷却后都有N刀可出。"
+"options.role.hitman.killCoolDown" : "击杀冷却时间"
+"options.role.hitman.numOfKilling" : "每次冷却获得的击杀数"
+
+#Exiled
+
+"game.exile.roleText" : "%NAME% 的职业是 %ROLE%"
