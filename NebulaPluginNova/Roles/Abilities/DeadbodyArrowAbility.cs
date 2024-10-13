@@ -19,7 +19,6 @@ public class DeadbodyArrowAbility : ComponentHolder, IGameOperator
     void OnDeadBodyGenerated(DeadBodyInstantiateEvent ev)
     {
         AllArrows.Add((ev.DeadBody, Bind(new Arrow(null) { TargetPos = ev.DeadBody.TruePosition }.SetColor(Color.blue))));
-        LocalUpdate(null!);
     }
 
     void LocalUpdate(GameUpdateEvent ev)

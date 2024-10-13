@@ -83,9 +83,13 @@ public class Camouflager : DefinedRoleTemplate, HasCitation, DefinedRole
             if (AmOwner && acTokenChallenge != null) acTokenChallenge.Value.killed++;
         }
 
+        void RuntimeAssignable.OnInactivated() 
+        {
+            RpcCamouflage.Invoke(new(MyPlayer.PlayerId, false));
+        }
     }
 
-    private static NetworkedPlayerInfo.PlayerOutfit CamouflagerOutfit = new() { PlayerName = "", ColorId = NebulaPlayerTab.CamouflageColorId, HatId = "hat_NoHat", SkinId = "skin_None", VisorId = "visor_EmptyVisor", PetId= "pet_EmptyPet" };
+        private static NetworkedPlayerInfo.PlayerOutfit CamouflagerOutfit = new() { PlayerName = "", ColorId = NebulaPlayerTab.CamouflageColorId, HatId = "hat_NoHat", SkinId = "skin_None", VisorId = "visor_EmptyVisor", PetId= "pet_EmptyPet" };
 
     public static RemoteProcess<(byte camouflagerId, bool on)> RpcCamouflage = new(
         "Camouflage",

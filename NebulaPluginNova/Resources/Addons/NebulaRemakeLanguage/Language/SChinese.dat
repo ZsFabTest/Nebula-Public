@@ -1,0 +1,462 @@
+# Roles
+
+"options.role.agent.detail" : "代理人可以替磨磨唧唧的船员完成任务。\n根据设置，代理人死后可以继续接取任务，但死亡后接取的任务全部为长任务。"
+"options.role.agent.canGetExtraTasksAfterDied" : "代理人死后可继续接取任务"
+
+"role.amnesiac.name" : "失忆者"
+"role.amnesiac.short" : "忆"
+"role.amnesiac.blurb" : "我是谁 我在哪？"
+"options.role.amnesiac.detail" : "失忆者的回忆技能除被交换外将会永久保留。<br>失忆者通过对尸体使用技能可以获取尸体主人的职业并保留其职业数据。<br>失忆者可以反复通过回忆更换阵营。<br>当胜利条件达成且失忆者存活且只能单独胜利时，失忆者将抢夺胜利。"
+"options.role.amnesiac.recallCooldown" : "回忆冷却时间"
+"options.role.amnesiac.canOnlyWinAsNeutral" : "失忆者只能作为中立阵营胜利"
+"role.amnesiac.postfix" : " (失忆)"
+"role.amnesiacModifier.name" : "失忆者[判定]"
+
+"role.avenger.becomeAvengerTitle" : "是时候复仇了..."
+
+"role.baitModifier.name" : "诱饵"
+"role.baitModifier.short" : "诱"
+"role.baitModifier.generalBlurb" : "诱骗敌人"
+"options.role.baitModifier.detail" : "诱饵被杀后，凶手会立刻报告诱饵的尸体"
+"options.role.baitModifier.numToSpawn" : "最大数量"
+"options.role.baitModifier.roleChance" : "生成概率"
+
+"role.collector.name" : "集票者"
+"role.collector.short" : "集"
+"role.collector.blurb" : "诡异的收藏家"
+"options.role.collector.detail" : "集票者可以收集他所投给的玩家收到的投票。<br>集齐一定票数后集票者获胜。"
+"options.role.collector.collectedVotesToWin" : "胜利所需集票票数"
+"options.role.collector.canCallEmergencyMeeting" : "可以发起紧急会议"
+"role.collector.taskText" : "[集票者]收集投票情况：%DETAIL%票"
+
+"role.evilAce.name" : "密命王牌"
+"role.evilAce.short" : "王"
+"role.evilAce.blurb" : "无法被看透的王牌"
+"options.role.evilAce.detail" : "密命王牌可以知晓伪装者们所击杀的玩家的职业。<br>密命王牌作为最后一人时其cd减少。"
+"options.role.evilAce.killCoolDown" : "作为最后一名伪装者时的击杀冷却倍率"
+
+"role.evilSwapper.name" : "邪恶的换票师"
+"role.evilSwapper.short" : "坏换"
+"role.evilSwapper.blurb" : "也许是无辜的替罪羊"
+"options.role.evilSwapper.detail" : "邪恶的换票师可以通过换票能力保护队友及叛徒。"
+
+"role.fireWorks.name" : "烟花商人"
+"role.fireWorks.short" : "烟"
+"role.fireWorks.blurb" : "让他们消失在绚丽的烟火中"
+"options.role.fireWorks.detail" : "烟花商人没有普通击杀能力。<br>烟花商人类似于二营长，但他的标记所有人可见。<br>烟花爆炸留下的痕迹整局游戏存在。"
+"options.role.fireWork.placeFireWorkCoolDown" : "烟花放置冷却时间"
+"options.role.fireWork.explodeCoolDown" : "烟花引燃冷却时间"
+"options.role.fireWork.explodeRatioCoolDown" : "烟花爆炸半径"
+
+"role.ghostEngineer.name" : "灵魂工程师"
+"role.ghostEngineer.blurb" : "永无止境的工作"
+"role.ghostEngineer.short" : "魂工"
+"options.role.ghostEngineer.detail" : "灵魂工程师拥有秒修破坏的能力。"
+"options.role.ghostEngineer.numOfRepairing" : "可使用修理次数"
+
+"role.judge.name" : "法官"
+"role.judge.short" : "法"
+"role.judge.blurb" : "无情地执行正义"
+"options.role.judge.detail" : "法官可以在会议上直接处决其他玩家，但有限制。<br>处决错误的玩家将会导致法官死亡。"
+"options.role.judge.numOfGuess" : "处决次数"
+"options.role.judge.canJudgeNeutralRoles" : "可以处决中立阵营"
+"options.role.judge.canJudgeMadmate" : "可以处决叛徒"
+"options.role.judge.canJudgeLovers" : "可以处决恋人"
+"options.role.judge.canCallEmergencyMeeting" : "可以发起紧急会议"
+"options.role.judge.canJudgeAnyoneWhenBecomeMadmate" : "叛徒法官乱杀"
+
+"role.knight.name" : "骑士"
+"role.knight.short" : "骑"
+"role.knight.blurb" : "捍卫骑士的荣耀"
+"options.role.knight.detail" : "骑士拥有格挡技能。<br>在格挡期间，骑士不会因直接击杀导致死亡。"
+"options.role.knight.blockCoolDown" : "格挡冷却时间"
+"options.role.knight.blockDuration" : "格挡持续时间"
+
+"role.lastImpostor.name" : "绝境者"
+"role.lastimpostor.short" : "LI"
+"role.lastImpostor.generalBlurb" : "赌上所拥有的一切"
+"options.role.lastImpostor.detail" : "绝境者拥有赌怪能力。<br>绝境者的赌杀总次数不限，每次会议次数不限。"
+"options.role.lastImpostor.canSpawn" : "在剩余最后一名伪装者时分配"
+"options.role.lastImpostor.canGuessAnyRole" : "绝境者无视赌怪可赌职业限制"
+
+"role.madmateModifier.name" : "叛徒"
+"role.madmateModifier.short" : "叛"
+"role.madmateModifier.generalBlurb" : "帮助伪装者获得胜利"
+"options.role.madmateModifier.detail" : "叛徒属于伪装者阵营。<br>去背刺船员帮助伪装者！"
+"options.role.madmateModifier.numToSpawn" : "最大数量"
+"options.role.madmateModifier.roleChance" : "生成概率"
+"role.madmateModifier.prefix" : "叛变的"
+"role.madmateModifier.prefix.short" : "叛"
+
+"role.miner.name" : "埋雷兵"
+"role.miner.short" : "埋"
+"role.miner.blurb" : "在管道口放置地雷"
+"options.role.miner.detail" : "埋雷兵可以对管道使用技能。<br>一个管道技能只能同时存在一个。<br>任意跳入或跳出该管道的玩家将会被击杀，并消耗该管道的技能使埋雷兵可以再次对该管道使用技能。<br>技能不随埋雷兵职业改变而失效。"
+"options.role.miner.layingMineCooldown" : "埋雷冷却时间"
+"options.role.miner.numOfMines" : "最大埋雷次数"
+"role.minerModifier.name" : "埋雷兵[判定]"
+
+"role.moran.name" : "莫兰上校"
+"role.moran.short" : "兰"
+"role.moran.blurb" : "是时候拿起气步枪了"
+"options.role.moran.detail" : "莫兰上校拥有和狙击手相近的能力。<br>莫兰上校狙击时无提示与声音。"
+"options.role.moran.snipeCoolDown" : "狙击冷却时间"
+"options.role.moran.shotSize" : "子弹大小"
+"options.role.moran.shotEffectiveRange" : "最大狙击距离"
+"options.role.moran.storeRifleOnFire" : "射击后自动收枪"
+"options.role.moran.storeRifleOnUsingUtility" : "使用互动面板时自动收枪"
+"options.role.moran.canSeeRifleInShadow" : "可以在阴影中看到狙击枪"
+"options.role.moran.canKillHidingPlayer" : "可以击杀隐藏在管道中的玩家"
+"options.role.moran.aimAssist" : "瞄准辅助"
+"options.role.moran.delayInAimAssistActivation" : "瞄准辅助激活延迟"
+
+"role.moriarty.name" : "莫里亚蒂"
+"role.moriarty.short" : "莫"
+"role.moriarty.blurb" : "邪恶团队的大脑"
+"options.role.moriarty.detail" : "莫里亚蒂可以招募莫兰上校。<br>莫里亚蒂可以与别人同归于尽。<br>任一莫里亚蒂团队成员击杀福尔摩斯将直接胜利。"
+"options.role.moriarty.suicideCoolDown" : "同归于尽冷却时间"
+
+"role.niceSwapper.name" : "正义的换票师"
+"role.niceSwapper.short" : "好换"
+"role.niceSwapper.blurb" : "I DO NOT think so..."
+"options.role.niceSwapper.detail" : "正义的换票师通过换票能力改变投票结果。"
+
+"role.oracle.name" : "占卜师"
+"role.oracle.short" : "占"
+"role.oracle.blurb" : "感受你的过往"
+"options.role.oracle.detail" : "你可以获取他人的职业。<br>你获取的信息会混杂着多个错误的干扰信息。"
+"options.role.oracle.oracleCoolDown" : "占卜冷却时间"
+"options.role.oracle.oracleDuration" : "占卜所需时间"
+"options.role.oracle.numOfInfo" : "占卜获得的职业数量"
+"role.oracle.message" : "%PLAYER%的职业是%DETAIL%其中之一"
+
+"role.pavlov.name" : "巴普洛夫"
+"role.pavlov.short" : "巴"
+"role.pavlov.blurb" : "当我的狗吧！"
+"options.role.pavlov.detail" : "巴普洛夫可以招募巴普洛夫的狗。<br>同一巴普洛夫职业只能同时存在一个巴普洛夫的狗。"
+"options.role.pavlov.maxFeedCount" : "最大招募人数"
+"options.role.pavlov.feedCoolingDown" : "招募冷却时间"
+
+"role.pavlovsDog.name" : "巴普洛夫的狗"
+"role.pavlovsDog.short" : "狗"
+"role.pavlovsDog.blurb" : "我是____的狗！"
+"options.role.pavlovsDog.detail" : "巴普洛夫的狗拥有击杀能力。<br>当狗主人死亡时，巴普洛夫的狗会进入疯狂状态。<br>疯狂状态下巴普洛夫的狗拥有类似于嗜血杀手开刀后的能力。"
+"options.role.pavlovsDog.canKillHidingPlayer" : "可以击杀隐藏的玩家"
+"options.role.pavlovsDog.killCoolDown" : "一般击杀冷却时间"
+"options.role.pavlovsDog.killCoolDownWhenOwnerDied" : "疯狂时击杀冷却时间"
+"options.role.pavlovsDog.suicideTime" : "自杀倒计时最大时间"
+"options.role.pavlovsDog.resetSuicideTimerAfterMeeting" : "会议后重置倒计时"
+
+"role.serialKiller.name" : "嗜血杀手"
+"role.serialKiller.short" : "嗜"
+"role.serialKiller.blurb" : "你渴望鲜血"
+"options.role.serialKiller.detail" : "你的击杀快于一般伪装者，但在第一次击杀后一定时间内没有出刀则会自杀。"
+"options.role.serialKiller.killCoolDown" : "击杀冷却时间"
+"options.role.serialKiller.suicideTime" : "自杀倒计时最大时间"
+"options.role.serialKiller.timeToGet" : "每次击杀后自杀倒计时冷却恢复最大时间"
+"options.role.serialKiller.timeEachKillingGet" : "每次击杀获得的冷却时间"
+
+"role.schrödingersCat.name" : "薛定谔的猫"
+"role.schrödingersCat.short" : "猫"
+"role.schrödingersCat.blurb" : "墙头草，两边倒"
+"options.role.schrödingersCat.detail" : "薛定谔的猫可以通过击杀更换阵营。<br>更换一次阵营以后不可再次更换。"
+"options.role.schrödingersCat.numOfLeftImpostorToBeAllowedToKill" : "红猫在剩余多少伪装者时获得击杀能力"
+"options.role.schrödingersCat.impostorKillCoolDown" : "红猫击杀冷却时间"
+"options.role.schrödingersCat.jackalHasKill" : "蓝猫拥有击杀能力"
+"options.role.schrödingersCat.jackalKillCoolDown" : "蓝猫击杀冷却时间"
+
+"role.schrödingersCatCrewmate.name" : "薛定谔的猫"
+"role.schrödingersCatCrewmate.short" : "猫"
+"role.schrödingersCatCrewmate.blurb" : "墙头草，两边倒"
+"options.role.schrödingersCatCrewmate.detail" : "你现在加入了船员阵营。<br>找出伪装者并与船员共同胜利。"
+
+"role.schrödingersCatImpostor.name" : "薛定谔的猫"
+"role.schrödingersCatImpostor.short" : "猫"
+"role.schrödingersCatImpostor.blurb" : "墙头草，两边倒"
+"options.role.schrödingersCatImpostor.detail" : "你现在加入了伪装者阵营。<br>击杀船员并与伪装者共同胜利。"
+
+"role.schrödingersCatJackal.name" : "薛定谔的猫"
+"role.schrödingersCatJackal.short" : "猫"
+"role.schrödingersCatJackal.blurb" : "墙头草，两边倒"
+"options.role.schrödingersCatJackal.detail" : "你现在加入了豺狼阵营。<br>击杀所有人并与豺狼共同胜利。"
+
+"role.sherlock.name" : "福尔摩斯"
+"role.sherlock.short" : "福"
+"role.sherlock.blurb" : "拨开迷雾 看清真相"
+"options.role.sherlock.detail" : "福尔摩斯可获得玩家的阵营（或职业）。<br>福尔摩斯被任一莫里亚蒂团队成员击杀，莫里亚蒂团队直接胜利。"
+"options.role.sherlock.numOfInvestigation" : "最大调查次数"
+"options.role.sherlock.investiateCoolDown" : "调查冷却时间"
+"options.role.sherlock.canKnowExactlyRole" : "可以获得具体职业"
+"role.sherlock.investigation.crewmate" : "船员"
+"role.sherlock.investigation.impostor" : "伪装者"
+"role.sherlock.investigation.neutral" : "中立"
+
+"role.swapper.name" : "换票师"
+"role.swapper.blurb" : "啊？"
+"options.role.swapper.numOfSwap" : "换票次数"
+"options.role.swapper.canCallEmergencyMeeting" : "可以发起紧急会议"
+
+"role.tianMengLucky.name" : "天寸"
+"role.tianMengLucky.short" : "Yee"
+"role.tianMengLucky.generalBlurb" : "每 日 发 癫"
+"options.role.tianMengLucky.detail" : "如果你是第三方阵营，被票后直接胜利。<br>如果你是船员阵营，你只能跟伪装者胜利，且你存活期间内，船员不能胜利。<br>如果你是伪装者阵营，自己必须存活，且仅剩自己的情况下才能胜利。"
+
+"role.unyielding.name" : "不屈者"
+"role.unyielding.short" : "屈"
+"role.unyielding.blurb" : "我还不想死"
+"options.role.unyielding.detail" : "你在死后可以通过其他玩家的尸体复活。<br>复活后你将继承该玩家的职业。<br>不复活时你可以跟随原阵营胜利。<br>死亡后你看不到其他玩家的职业信息。"
+
+# Meta
+
+"role.moran.shotRange" : "显示狙击范围"
+"role.moran.shotSize" : "显示子弹大小"
+
+# States
+
+"state.exploded" : "爆炸"
+"state.judged" : "审判"
+"state.misjudged" : "误判"
+
+# Buttons
+
+"button.label.block" : "格挡"
+"button.label.feed" : "喂养"
+"button.label.fireWork" : "点燃"
+"button.label.investigate" : "调查"
+"button.label.layMines" : "埋雷"
+"button.label.moriartySuicide" : "同归于尽"
+"button.label.recall" : "回忆"
+"button.label.recruit" : "招募"
+"button.label.repair" : "修理"
+"button.label.oracle" : "占卜"
+"button.label.quickStart" : "快速开始"
+"button.label.serialKillerSuicide" : "自杀倒计时"
+
+# Teams
+
+"teams.collector" : "集票者"
+"teams.moriarty" : "莫里亚蒂"
+"teams.schrödingersCat" : "薛定谔的猫"
+"teams.pavlov" : "巴普洛夫团队"
+
+# Endings
+
+"end.collector" : "集票者获胜"
+"end.pavlov" : "巴普洛夫团队胜利"
+"end.moriarty" : "莫里亚蒂团队胜利"
+
+# Chat
+
+"chat.default" : "空频道"
+"chat.impostor" : "[伪装者频道]"
+"chat.jackal" : "[豺狼频道]"
+"chat.lover" : "[恋人频道]"
+
+"chat.unknowPlayer" : "/tell: 未知目标玩家"
+"chat.private" : "[私聊]"
+"chat.impostorDisabled" : "/impostor: 伪装者频道已关闭"
+"chat.jackalDisabled" : "/jackal: 豺狼频道已关闭"
+"chat.loverDisabled" : "/lover: 伪装者频道已关闭"
+"chat.notImpostor" : "/impostor: 无法使用伪装者频道"
+"chat.notJackal" : "/jackal: 无法使用豺狼频道"
+"chat.notLover" : "/lover: 无法使用恋人频道"
+"chat.nac" : "/help: 查询命令<br> - /tell [玩家名] [消息内容] : 私聊<br> - /impostor [消息内容] : 伪装者频道<br> - /jackal [消息内容] : 豺狼频道<br> - /lover [消息内容] : 恋人频道"
+
+# Input
+
+"input.changeCannel" : "聊天框更换频道"
+
+# Options
+
+"options.bubbleChat" : "聊天框频道"
+"options.bubbleChat.detail" : "允许玩家在游戏内随时使用聊天框与队友交流。"
+"options.bubbleChat.useBubbleChat" : "启用恋人私聊"
+"options.bubbleChat.enableImpostorCannel" : "启用伪装者频道"
+"options.bubbleChat.enableJackalCannel" : "启用豺狼频道"
+"options.bubbleChat.enableLoverCannel" : "启用恋人频道"
+
+"options.host" : "房主设定"
+"options.host.detail" : "利好房主的一些小设置。"
+"options.host.kickIfDismatched" : "当玩家NoS-R(NOS)版本不匹配时直接踢出"
+"options.putQuickStartButtonOnLeft" : "显示快速开始按钮"
+
+"config.client.forcefullyUsePlus25Protocol" : "<i>（重进生效）</i>强制使用+25协议"
+"config.client.useStandaloneServerList" : "使用独立服务器列表"
+
+# Achievements
+
+"achievement.collector.common1.title" : "收藏癖"
+"achievement.collector.common1.goal" : "一次性收集5张票。"
+"achievement.collector.common1.cond" : ""
+
+"achievement.collector.another1.title" : "失败的煽动者"
+"achievement.collector.another1.goal" : "一次性只收集到了1张投票（即自己的投票）。"
+"achievement.collector.another1.cond" : ""
+
+"achievement.collector.challenge.title" : "收藏狂人"
+"achievement.collector.challenge.goal" : "一次性收集10张票。"
+"achievement.collector.challenge.cond" : ""
+
+"achievement.evilAce.common1.title" : "先斩后奏"
+"achievement.evilAce.common1.goal" : "通过推理赌杀一人。"
+"achievement.evilAce.common1.cond" : ""
+
+"achievement.evilAce.another1.title" : "意料之外的背叛"
+"achievement.evilAce.another1.goal" : "赌杀一名伪装者。"
+"achievement.evilAce.another1.cond" : ""
+
+"achievement.evilAce.challenge.title" : "墓地管理员"
+"achievement.evilAce.challenge.goal" : "获取所有已死亡玩家的身份信息。"
+"achievement.evilAce.challenge.cond" : "死亡玩家在五人及以上" 
+
+"achievement.fireWorks.another1.title" : "演出事故"
+"achievement.fireWorks.another1.goal" : "烟花商人被烟花炸死。"
+"achievement.fireWorks.another1.cond" : ""
+
+"achievement.fireWorks.another2.title" : "哑炮"
+"achievement.fireWorks.another2.goal" : "烟花没有炸死任何人。"
+"achievement.fireWorks.another2.cond" : ""
+
+"achievement.fireWorks.challenge.title" : "精彩演出"
+"achievement.fireWorks.challenge.goal" : "烟花一次性炸死5人及以上（自己不算）。"
+"achievement.fireWorks.challenge.cond" : ""
+
+"achievement.ghostEngineer.challenge.title" : "永不停歇的工作"
+"achievement.ghostEngineer.challenge.goal" : "使用完全部的修理次数并且船员阵营取得胜利。"
+"achievement.ghostEngineer.challenge.cond" : "修理次数大于1"
+
+"achievement.judge.common1.title" : "庭审入门"
+"achievement.judge.common1.goal" : "成功审判一人。"
+"achievement.judge.common1.cond" : ""
+
+"achievement.judge.another1.title" : "太失败了"
+"achievement.judge.another1.goal" : "审判失败。"
+"achievement.judge.another1.cond" : ""
+
+"achievement.judge.challenge.title" : "审判长"
+"achievement.judge.challenge.goal" : "成功审判三人并存活到最后取得胜利。"
+"achievement.judge.challenge.cond" : "游戏结束时存活且成功审判三人"
+
+"achievement.knight.common1.title" : "来者何人"
+"achievement.knight.common1.goal" : "成功格挡一次击杀。"
+"achievement.knight.common1.cond" : ""
+
+"achievement.knight.common2.title" : "振刀"
+"achievement.knight.common2.goal" : "累计格挡十次击杀。"
+"achievement.knight.common2.cond" : ""
+
+"achievement.knight.challenge.title" : "四面楚歌"
+"achievement.knight.challenge.goal" : "一次性格挡三次击杀。"
+"achievement.knight.challenge.cond" : "在一次技能期间避免三次击杀"
+
+"achievement.miner.common1.title" : "爆破狂"
+"achievement.miner.common1.goal" : "消耗所有的技能次数。"
+"achievement.miner.common1.cond" : "技能总数不少于3"
+
+"achievement.miner.challenge.title" : "恐怖分子"
+"achievement.miner.challenge.goal" : "在同一局游戏中炸死除自己外的3人。"
+"achievement.miner.challenge.cond" : ""
+
+"achievement.moriarty.common.title" : "二人幸终"
+"achievement.moriarty.common.goal" : "与船员同归于尽。"
+"achievement.moriarty.common.cond" : ""
+
+"achievement.moriarty.challenge.title" : "真正的恐怖分子"
+"achievement.moriarty.challenge.goal" : "与福尔摩斯同归于尽并取得胜利。"
+"achievement.moriarty.challenge.cond" : ""
+
+"achievement.moran.another.title" : "猪队友"
+"achievement.moran.another.goal" : "狙杀莫里亚蒂。"
+"achievement.moran.another.cond" : ""
+
+"achievement.moran.challenge.title" : "终于等到你"
+"achievement.moran.challenge.goal" : "狙杀福尔摩斯并取得胜利。"
+"achievement.moran.challenge.cond" : ""
+
+"achievement.oracle.common1.title" : "让我看看"
+"achievement.oracle.common1.goal" : "使用一次占卜。"
+"achievement.oracle.common1.cond" : ""
+
+"achievement.oracle.common2.title" : "无用功"
+"achievement.oracle.common2.goal" : "占卜同一人。"
+"achievement.oracle.common2.cond" : "该玩家的占卜信息没有被刷新（死亡后复活）"
+
+"achievement.oracle.challenge.title" : "进击的赌徒"
+"achievement.oracle.challenge.goal" : "占卜后赌杀一人。"
+"achievement.oracle.challenge.cond" : "被赌杀的玩家已经被占卜过且信息没有被刷新（死亡后复活）"
+
+"achievement.pavlov.common1.title" : "狗主人"
+"achievement.pavlov.common1.goal" : "招募巴普洛夫的狗。"
+"achievement.pavlov.common1.cond" : ""
+
+"achievement.pavlov.common2.title" : "帮主"
+"achievement.pavlov.common2.goal" : "耗尽招募次数。"
+"achievement.pavlov.common2.cond" : ""
+
+"achievement.pavlov.challenge.title" : "汪汪队"
+"achievement.pavlov.challenge.goal" : "耗尽招募次数的情况下胜利。"
+"achievement.pavlov.challenge.cond" : ""
+
+"achievement.pavlovsDog.another1.title" : "老马啊"
+"achievement.pavlovsDog.another1.goal" : "由于疯狂状态下没有击杀而自杀。"
+"achievement.pavlovsDog.another1.cond" : ""
+
+"achievement.pavlovsDog.challenge.title" : "无法无天"
+"achievement.pavlovsDog.challenge.goal" : "在疯狂状态下击杀3人及以上。"
+"achievement.pavlovsDog.challenge.cond" : ""
+
+"achievement.serialKiller.common1.title" : "awsl"
+"achievement.serialKiller.common1.goal" : "由于没有及时出刀导致嗜血杀手自杀。"
+"achievement.serialKiller.common1.cond" : ""
+
+"achievement.serialKiller.common2.title" : "连环杀手"
+"achievement.serialKiller.common2.goal" : "以嗜血杀手身份击杀3人。"
+"achievement.serialKiller.common2.cond" : ""
+
+"achievement.serialKiller.challenge.title" : "饥渴难耐"
+"achievement.serialKiller.challenge.goal" : "以嗜血杀手身份击杀5人。"
+"achievement.serialKiller.challenge.cond" : ""
+
+"achievement.schrödingersCat.common1.title" : "墙头草"
+"achievement.schrödingersCat.common1.goal" : "更换阵营。"
+"achievement.schrödingersCat.common1.cond" : ""
+
+"achievement.schrödingersCat.another1.title" : "太糟糕了"
+"achievement.schrödingersCat.another1.goal" : "没有更换阵营直接死亡。"
+"achievement.schrödingersCat.another1.cond" : ""
+
+"achievement.schrödingersCat.common2.title" : "无人问津"
+"achievement.schrödingersCat.common2.goal" : "没有更换阵营并活到最后。"
+"achievement.schrödingersCat.common2.cond" : ""
+
+"achievement.schrödingersCat.challenge.title" : "有一份热 发一分光"
+"achievement.schrödingersCat.challenge.goal" : "更换阵营后跟随该阵营胜利。"
+"achievement.schrödingersCat.challenge.cond" : ""
+
+"achievement.sherlock.common.title" : "蛛丝马迹"
+"achievement.sherlock.common.goal" : "发现伪装者。"
+"achievement.sherlock.common.cond" : ""
+
+"achievement.swapper.common.title" : "矫揉造作"
+"achievement.swapper.common.goal" : "通过换票成功改变放逐结果。"
+"achievement.swapper.common.cond" : ""
+
+"achievement.swapper.another.title" : "会议事故"
+"achievement.swapper.another.goal" : "换票师被放逐。"
+"achievement.swapper.another.cond" : ""
+
+"achievement.swapper.challenge.title" : "大难临头"
+"achievement.swapper.challenge.goal" : "被换票师交换投票并被放逐。"
+"achievement.swapper.challenge.cond" : ""
+
+"achievement.unyielding.common1.title" : "我重生了"
+"achievement.unyielding.common1.goal" : "通过玩家的尸体复活一次。"
+"achievement.unyielding.common1.cond" : ""
+
+"achievement.unyielding.challenge1.title" : "我要夺回属于我的一切"
+"achievement.unyielding.challenge1.goal" : "重生后胜利。"
+"achievement.unyielding.challenge1.cond" : ""
+
+"achievement.unyielding.challenge2.title" : "重生(极速版)"
+"achievement.unyielding.challenge2.goal" : "目睹击杀现场。"
+"achievement.unyielding.challenge2.cond" : "尚未复活过"

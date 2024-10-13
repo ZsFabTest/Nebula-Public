@@ -163,10 +163,11 @@ internal static class ConfigurationValues
             //(Item1)番目から(Item2)-1番目まで
             IEnumerator<Tuple<int, int>> GetDivider()
             {
+                //Debug.LogWarning(AllEntries.Count);
                 int done = 0;
                 while (done < AllEntries.Count)
                 {
-                    int max = Mathf.Min(AllEntries.Count, done + 100);
+                    int max = Mathf.Min(AllEntries.Count, done + 200);
                     yield return new Tuple<int, int>(done, max);
                     done = max;
                 }
@@ -183,6 +184,17 @@ internal static class ConfigurationValues
        {
            int index = reader.ReadInt32();
            int num = reader.ReadInt32();
+           /*
+           byte[] datas = reader.ReadBytes(num * 4);
+           Debug.Log(datas.Length);
+           for(int i = 0;i < num;i++)
+           {
+               Debug.Log(i);
+               Debug.Log((datas[4 * i] << 0x18) ^ (datas[4 * i + 1] << 0x10) ^ (datas[4 * i + 2] << 0x08) ^ datas[4 * i + 3]);
+               AllEntries[index + i].RpcValue = (datas[4 * i] << 0x18) ^ (datas[4 * i + 1] << 0x10) ^ (datas[4 * i + 2] << 0x08) ^ datas[4 * i + 3];
+           }
+           */
+           
            Debug.Log($"Received Share All Option RPC, Index: {index}, Num: {num}");
            for (int i = 0; i < num; i++)
            {
@@ -190,11 +202,13 @@ internal static class ConfigurationValues
                try
                {
                    AllEntries[index + i].RpcValue = value;
-               }catch(Exception ex)
+               }
+               catch (Exception ex)
                {
                    Debug.LogError($"RPC Set Error (ID: {index + i}, Name: {AllEntries[index + i].Name}, Value: {value})\n" + ex.ToString());
                }
            }
+           
            return new Tuple<int, int>(index, num);
        },
        (message, isCalledByMe) =>

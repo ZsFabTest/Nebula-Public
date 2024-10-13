@@ -652,7 +652,7 @@ public class Justice : DefinedRoleTemplate, HasCitation, DefinedRole
                            }
                        }
                    },
-                   p => !usedBalance && !p.MyPlayer.IsDead && !MeetingHudExtension.ExileEvenIfTie && !MyPlayer.IsDead && (!p.MyPlayer.AmOwner || !PutJusticeOnTheBalanceOption)
+                    p => !usedBalance && !p.MyPlayer.IsDead && !MeetingHudExtension.ExileEvenIfTie && !MyPlayer.IsDead && (!p.MyPlayer.AmOwner || !PutJusticeOnTheBalanceOption)
                    ));
             }
         }

@@ -14,7 +14,7 @@ using static UnityEngine.GraphicsBuffer;
 namespace Nebula.Roles.Impostor;
 
 [NebulaRPCHolder]
-public class Raider : DefinedRoleTemplate, DefinedRole
+public class Raider : DefinedRoleTemplate, HasCitation, DefinedRole
 {
     private Raider() : base("raider", new(Palette.ImpostorRed), RoleCategory.ImpostorRole, Impostor.MyTeam, [ThrowCoolDownOption, AxeSizeOption, AxeSpeedOption,CanKillImpostorOption]) {
         ConfigurationHolder?.AddTags(ConfigurationTags.TagFunny, ConfigurationTags.TagDifficult);
@@ -22,6 +22,7 @@ public class Raider : DefinedRoleTemplate, DefinedRole
 
         MetaAbility.RegisterCircle(new("role.raider.axeSize", () => AxeSizeOption * 0.4f, () => null, UnityColor));
     }
+    Citation? HasCitation.Citaion => Citations.NebulaOnTheShip_Old;
 
     RuntimeRole RuntimeAssignableGenerator<RuntimeRole>.CreateInstance(GamePlayer player, int[] arguments) => new Instance(player);
 
@@ -165,7 +166,6 @@ public class Raider : DefinedRoleTemplate, DefinedRole
         }
 
         static RaiderAxe() => NebulaSyncObject.RegisterInstantiater(MyTag, (args) => new RaiderAxe(Helpers.GetPlayer((byte)args[0])!));
-        
     }
 
     public class Instance : RuntimeAssignableTemplate, RuntimeRole

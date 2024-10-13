@@ -1,7 +1,6 @@
 ﻿using Nebula.Behaviour;
 using TMPro;
 using Twitch;
-using UnityEngine;
 
 namespace Nebula;
 

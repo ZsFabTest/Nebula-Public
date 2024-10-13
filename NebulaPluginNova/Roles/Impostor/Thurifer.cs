@@ -299,7 +299,7 @@ public class Thurifer : DefinedRoleTemplate, DefinedRole
         DefinedRole RuntimeRole.Role => MyRole;
 
         //画面左下のホルダ
-        PlayersIconHolder iconHolder;
+        PlayersIconHolder iconHolder = null!;
 
         public Instance(GamePlayer player) : base(player)
         {

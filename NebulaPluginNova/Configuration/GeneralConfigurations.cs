@@ -43,14 +43,14 @@ public static class GeneralConfigurations
 
     static internal IntegerConfiguration AssignmentCrewmateOption = new RoleCountConfiguration("options.assignment.crewmate", 24 + 1, -1);
     static internal IntegerConfiguration AssignmentImpostorOption = new RoleCountConfiguration("options.assignment.impostor", 6 + 1, -1);
-    static internal IntegerConfiguration AssignmentNeutralOption = NebulaAPI.Configurations.Configuration("options.assignment.neutral", (0,24), 0);
+    static internal IntegerConfiguration AssignmentNeutralOption = NebulaAPI.Configurations.Configuration("options.assignment.neutral", (0, 24), 0);
     static internal BoolConfiguration AssignOpToHostOption = new BoolConfigurationImpl("options.assignment.assignOpToHost", false);
     static internal ValueConfiguration<int> GhostAssignmentOption = NebulaAPI.Configurations.Configuration("options.assignment.ghostAssignmentMethod", ["options.assignment.ghostAssignmentMethod.normal", "options.assignment.ghostAssignmentMethod.thrilling"], 0);
     static internal IConfigurationHolder AssignmentOptions = NebulaAPI.Configurations.Holder("options.assignment", [ConfigurationTab.Settings], [GameModes.FreePlay, GameModes.Standard]).AppendConfigurations([
         AssignmentCrewmateOption, AssignmentImpostorOption, AssignmentNeutralOption, AssignOpToHostOption
         ]);
 
-    static internal IntegerConfiguration NumOfDummiesOption = NebulaAPI.Configurations.Configuration("options.soloFreePlay.numOfDummies",(0, 23), 0);
+    static internal IntegerConfiguration NumOfDummiesOption = NebulaAPI.Configurations.Configuration("options.soloFreePlay.numOfDummies", (0, 23), 0);
     static internal IConfigurationHolder SoloFreePlayOptions = NebulaAPI.Configurations.Holder("options.soloFreePlay", [ConfigurationTab.Settings], [GameModes.FreePlay]).AppendConfigurations([
         NumOfDummiesOption
         ]);
@@ -459,6 +459,19 @@ public static class GeneralConfigurations
 
         private int ToSharableValueFromLocal(int index) => localExclusibeRolesCache.Aggregate(0, (val, a) => { if ((int)(a.Id / UnitSize) == index) return val | (1 << (a.Id % UnitSize)); else return val; });
     }
+
+    static public BoolConfiguration UseBubbleChatOption = NebulaAPI.Configurations.Configuration("options.bubbleChat.useBubbleChat", false);
+    //static public BoolConfiguration EnableImpostorCannelOption = NebulaAPI.Configurations.Configuration("options.bubbleChat.enableImpostorCannel", true, () => UseBubbleChatOption);
+    //static public BoolConfiguration EnableJackalCannelOption = NebulaAPI.Configurations.Configuration("options.bubbleChat.enableJackalCannel", true, () => UseBubbleChatOption);
+    //static public BoolConfiguration EnableLoverCannelOption = NebulaAPI.Configurations.Configuration("options.bubbleChat.enableLoverCannel", true, () => UseBubbleChatOption);
+    static internal IConfigurationHolder BubbleChatOptions = NebulaAPI.Configurations.Holder("options.bubbleChat", [ConfigurationTab.Settings], [GameModes.FreePlay, GameModes.Standard]).AppendConfigurations([
+            UseBubbleChatOption]);//, EnableImpostorCannelOption, EnableJackalCannelOption, EnableLoverCannelOption]);
+
+   // static public BoolConfiguration KickIfDismatchedOption = NebulaAPI.Configurations.Configuration("options.host.kickIfDismatched", false);
+    //static public BoolConfiguration ForcefullyUsePlus25ProtocolOption = NebulaAPI.Configurations.Configuration("options.host.forcefullyUsePlus25Protocol", true);
+    static public BoolConfiguration PutQuickStartButtonOnLeftOption = NebulaAPI.Configurations.Configuration("options.putQuickStartButtonOnLeft", true);
+    static internal IConfigurationHolder HostOptions = NebulaAPI.Configurations.Holder("options.host", [ConfigurationTab.Settings], [GameModes.FreePlay, GameModes.Standard]).AppendConfigurations([
+            /*KickIfDismatchedOption, */PutQuickStartButtonOnLeftOption]);
 }
 
 /*
@@ -483,7 +496,6 @@ public static class GameOptionsSerializePatch
         catch { }
         return true;
     }
-
     public static void Postfix(GameOptionsData __instance)
     {
         try

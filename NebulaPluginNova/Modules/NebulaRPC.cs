@@ -109,6 +109,7 @@ public static class RPCRouter
     }
 
     public static void SendRpc(string name, int hash, Action<MessageWriter> sender, Action localBodyProcess) {
+        //Debug.Log(name);
         if(currentSection == null)
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, 128, Hazel.SendOption.Reliable, -1);
@@ -804,6 +805,7 @@ class NebulaRPCHandlerPatch
         int id = reader.ReadInt32();
         if (RemoteProcessBase.AllNebulaProcess.TryGetValue(id,out var rpc))
         {
+            Debug.Log(rpc.Name);
             rpc.Receive(reader);
         }
         else

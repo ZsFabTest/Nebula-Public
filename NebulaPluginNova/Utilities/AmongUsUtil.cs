@@ -71,7 +71,6 @@ public static class AmongUsUtil
             renderer.material.SetColor("_AddColor", Color.clear);
         }
     }
-
     public static IDisposable IgnoreShadow(bool showNameText = true) => new IgnoreShadowScope(showNameText);
 
     public static MonoBehaviour CurrentCamTarget => HudManager.Instance.PlayerCam.Target;
@@ -101,7 +100,7 @@ public static class AmongUsUtil
     }
 
     public static UiElement CurrentUiElement => ControllerManager.Instance.CurrentUiState.CurrentSelection;
-    public static bool InMeeting => MeetingHud.Instance == null && ExileController.Instance == null;
+    public static bool InMeeting => MeetingHud.Instance != null || ExileController.Instance != null;
     public static byte CurrentMapId => GameOptionsManager.Instance.CurrentGameOptions.MapId;
     private static string[] mapName = new string[] { "skeld", "mira", "polus", "undefined", "airship", "fungle" };
     public static string ToMapName(byte mapId) => mapName[mapId];
@@ -240,7 +239,6 @@ public static class AmongUsUtil
         var renderer = UnityHelper.CreateObject<SpriteRenderer>("Light", null, (Vector3)position + new Vector3(0, 0, -50f), LayerExpansion.GetDrawShadowsLayer());
         renderer.sprite = lightSprite ?? lightMaskSprite.GetSprite();
         renderer.material.shader = NebulaAsset.MultiplyBackShader;
-        new LightInfo(renderer);
 
         return renderer;
     }

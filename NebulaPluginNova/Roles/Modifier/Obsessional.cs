@@ -11,9 +11,10 @@ using static UnityEngine.GraphicsBuffer;
 namespace Nebula.Roles.Modifier;
 
 
-public class Obsessional : DefinedAllocatableModifierTemplate, DefinedAllocatableModifier
+public class Obsessional : DefinedAllocatableModifierTemplate, HasCitation, DefinedAllocatableModifier
 {
     private Obsessional():base("obsessional", "OBS", new(177, 102, 156), [CanWinEvenIfObsessionalDieOption,CanWinEvenIfObsessionalTargetDieOption, ObsessionalSuicideWhenObsessionalTargetDieOption, ImpostorObsessionalObsessesOverOption]) { }
+    Citation? HasCitation.Citaion => Citations.NebulaOnTheShip;
 
     static private BoolConfiguration CanWinEvenIfObsessionalTargetDieOption = NebulaAPI.Configurations.Configuration("options.role.obsessional.canWinEvenIfObsessionalTargetDie", false);
     static private BoolConfiguration CanWinEvenIfObsessionalDieOption = NebulaAPI.Configurations.Configuration("options.role.obsessional.canWinEvenIfObsessionalDie", true);
@@ -172,6 +173,6 @@ public class Obsessional : DefinedAllocatableModifierTemplate, DefinedAllocatabl
             }
         }
 
-        bool RuntimeModifier.MyCrewmateTaskIsIgnored => obsession?.Role.Role.Category != Virial.Assignable.RoleCategory.CrewmateRole || obsession?.Role.Role == Madmate.MyRole;
+        bool RuntimeModifier.MyCrewmateTaskIsIgnored => obsession?.Role.Role.Category != Virial.Assignable.RoleCategory.CrewmateRole || obsession!.IsMadmate();
     }
 }

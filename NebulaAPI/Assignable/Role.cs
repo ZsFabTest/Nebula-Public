@@ -38,9 +38,6 @@ public interface ICodeName
 
 public interface ISpawnable
 {
-    /// <summary>
-    /// ゲーム中に出現しうる場合はtrueを返します。
-    /// </summary>
     bool IsSpawnable { get; }
 }
 
@@ -129,7 +126,6 @@ public interface DefinedAssignable : IRoleID
     internal UnityEngine.Color UnityColor { get; }
 
     IConfigurationHolder? ConfigurationHolder { get; }
-
     IEnumerable<DefinedAssignable> AchievementGroups => [this];
 }
 

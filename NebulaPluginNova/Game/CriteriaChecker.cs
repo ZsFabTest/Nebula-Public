@@ -1,4 +1,5 @@
 ﻿using Nebula.Behaviour;
+using Nebula.Roles.Crewmate;
 using Nebula.Roles.Impostor;
 using Nebula.Roles.Modifier;
 using Nebula.Roles.Neutral;
@@ -21,6 +22,8 @@ public class NebulaEndCriteria
         DIManager.Instance.RegisterGeneralModule<IGameModeStandard>(() => new JackalCriteria().Register(NebulaAPI.CurrentGame!));
         DIManager.Instance.RegisterGeneralModule<IGameModeStandard>(() => new LoversCriteria().Register(NebulaAPI.CurrentGame!));
         DIManager.Instance.RegisterGeneralModule<IGameModeStandard>(() => new JesterCriteria().Register(NebulaAPI.CurrentGame!));
+        DIManager.Instance.RegisterGeneralModule<IGameModeStandard>(() => new PavlovCriteria().Register(NebulaAPI.CurrentGame!));
+        DIManager.Instance.RegisterGeneralModule<IGameModeStandard>(() => new MoriartyCriteria().Register(NebulaAPI.CurrentGame!));
     }
 
 
@@ -37,11 +40,50 @@ public class NebulaEndCriteria
         this.gameModeMask = gameModeMask;
     }
 
+    public static (int totalAlive, int allEvil, int impostor, int madmate, int jackal, int pavlov, int moriarty) GetRoleData()
+    {
+        (int totalAlive, int allEvil, int impostor, int madmate, int jackal, int pavlov, int moriarty) result = new(0, 0, 0, 0, 0, 0, 0);
+        NebulaGameManager.Instance?.AllPlayerInfo().Do(p =>
+        {
+            if (p.IsDead) return;
+            result.totalAlive++;
+            if (p.Role.Role.Team == Impostor.MyTeam)
+            {
+                result.allEvil++;
+                result.impostor++;
+                return;
+            }
+            if (p.Role.Role.Team == Jackal.MyTeam || p.Modifiers.Any(m => m.Modifier == SidekickModifier.MyRole))
+            {
+                result.allEvil++;
+                result.jackal++;
+                return;
+            }
+            if (p.IsMadmate()) result.madmate++;
+            if (p.Role.Role.Team == Pavlov.MyTeam)
+            {
+                result.allEvil++;
+                result.pavlov++;
+                return;
+            }
+            if (p.Role.Role.Team == Moriarty.MyTeam)
+            {
+                result.allEvil++;
+                result.moriarty++;
+                return;
+            }
+        });
+        return result;
+    }
+
     private class SabotageCriteria : IModule, IGameOperator
     {
-        [OnlyHost]
         void OnUpdate(GameUpdateEvent ev)
         {
+            var criteriaUpdateEvent = new CriteriaUpdateEvent(NebulaGameEnd.ImpostorWin, GameEndReason.Sabotage);
+            GameOperatorManager.Instance?.Run(criteriaUpdateEvent);
+            if (criteriaUpdateEvent.blockWinning) return;
+
             if (ShipStatus.Instance != null)
             {
                 var status = ShipStatus.Instance;
@@ -74,23 +116,23 @@ public class NebulaEndCriteria
 
     private class CrewmateCriteria : IModule, IGameOperator
     {
-        [OnlyHost]
         void OnUpdate(GameUpdateEvent ev)
         {
-            if (NebulaGameManager.Instance?.AllPlayerInfo().Any(p =>
-            {
-                if (p.IsDead) return false;
-                if (p.Role.Role.Team == Impostor.MyTeam) return true;
-                if (p.Role.Role.Team == Jackal.MyTeam || p.Modifiers.Any(m => m.Modifier == SidekickModifier.MyRole)) return true;
-                return false;
-            }) ?? true) return;
+            var criteriaUpdateEvent = new CriteriaUpdateEvent(NebulaGameEnd.CrewmateWin, GameEndReason.Situation);
+            GameOperatorManager.Instance?.Run(criteriaUpdateEvent);
+            if (criteriaUpdateEvent.blockWinning) return;
+
+            if (GetRoleData().allEvil > 0) return;
 
             NebulaAPI.CurrentGame?.TriggerGameEnd(NebulaGameEnd.CrewmateWin, GameEndReason.Situation);
         }
 
-        [OnlyHost]
         void OnTaskUpdate(PlayerTaskUpdateEvent ev)
         {
+            var criteriaUpdateEvent = new CriteriaUpdateEvent(NebulaGameEnd.CrewmateWin, GameEndReason.Task);
+            GameOperatorManager.Instance?.Run(criteriaUpdateEvent);
+            if (criteriaUpdateEvent.blockWinning) return;
+
             int quota = 0;
             int completed = 0;
             foreach (var p in NebulaGameManager.Instance!.AllPlayerInfo())
@@ -107,11 +149,16 @@ public class NebulaEndCriteria
 
     private class ImpostorCriteria : IModule, IGameOperator
     {
-        [OnlyHost]
         void OnUpdate(GameUpdateEvent ev)
         {
+            var criteriaUpdateEvent = new CriteriaUpdateEvent(NebulaGameEnd.ImpostorWin, GameEndReason.Situation);
+            GameOperatorManager.Instance?.Run(criteriaUpdateEvent);
+            if (criteriaUpdateEvent.blockWinning) return;
+
+            /*
             int impostors = 0;
             int totalAlive = 0;
+            int madmates = 0;
             
             foreach (var p in NebulaGameManager.Instance!.AllPlayerInfo())
             {
@@ -121,19 +168,34 @@ public class NebulaEndCriteria
                 //Loversではないインポスターのみカウントに入れる
                 if (p.Role.Role.Team == Impostor.MyTeam && !p.Unbox().TryGetModifier<Lover.Instance>(out _)) impostors++;
 
+                if (p.IsMadmate())
+                {
+                    madmates++;
+                    continue;
+                }
+
                 //ジャッカル陣営が生存している間は勝利できない
                 if (p.Role.Role.Team == Jackal.MyTeam || p.Unbox().AllModifiers.Any(m => m.Modifier == SidekickModifier.MyRole)) return;
             }
+            */
 
-            if(impostors * 2 >= totalAlive) NebulaAPI.CurrentGame?.TriggerGameEnd(NebulaGameEnd.ImpostorWin, GameEndReason.Situation);
+            var roleData = GetRoleData();
+            if (roleData.allEvil - roleData.impostor > 0) return;
+            int totalAlive = roleData.totalAlive, impostors = roleData.impostor, madmates = roleData.madmate;
+
+            if(impostors * 2 >= (totalAlive - madmates)) NebulaAPI.CurrentGame?.TriggerGameEnd(NebulaGameEnd.ImpostorWin, GameEndReason.Situation);
         }
     };
 
     private class JackalCriteria : IModule, IGameOperator
     {
-        [OnlyHost]
         void OnUpdate(GameUpdateEvent ev)
         {
+            var criteriaUpdateEvent = new CriteriaUpdateEvent(NebulaGameEnd.JackalWin, GameEndReason.Situation);
+            GameOperatorManager.Instance?.Run(criteriaUpdateEvent);
+            if (criteriaUpdateEvent.blockWinning) return;
+
+            /*
             int totalAlive = NebulaGameManager.Instance!.AllPlayerInfo().Count(p => !p.IsDead);
 
             bool isJackalTeam(GamePlayer p) => p.Role.Role.Team == Jackal.MyTeam || p.Unbox().AllModifiers.Any(m => m.Modifier == SidekickModifier.MyRole);
@@ -145,13 +207,18 @@ public class NebulaEndCriteria
             {
                 if (p.IsDead) continue;
 
-                if (isJackalTeam(p)) totalAliveAllJackals++;
+                if (isJackalTeam(p) && !p.TryGetModifier<MadmateModifier.Instance>(out _)) totalAliveAllJackals++;
 
                 //ラバーズが生存している間は勝利できない
                 if (p.Unbox().TryGetModifier<Lover.Instance>(out _)) return;
                 //インポスターが生存している間は勝利できない
                 if (p.Role.Role.Team == Impostor.MyTeam) return;
             }
+            */
+
+            var roleData = GetRoleData();
+            if (roleData.allEvil - roleData.jackal > 0) return;
+            int totalAlive = roleData.totalAlive, totalAliveAllJackals = roleData.jackal;
 
             //全ジャッカルに対して、各チームごとに勝敗を調べる
             foreach (var jackal in NebulaGameManager.Instance!.AllPlayerInfo().Where(p => !p.IsDead && p.Role.Role == Roles.Neutral.Jackal.MyRole))
@@ -171,35 +238,79 @@ public class NebulaEndCriteria
 
     private class LoversCriteria : IModule, IGameOperator
     {
-        [OnlyHost]
         void OnUpdate(GameUpdateEvent ev)
         {
-            int totalAlive = NebulaGameManager.Instance!.AllPlayerInfo().Count((p) => !p.IsDead);
+            int totalAlive = GetRoleData().totalAlive;
             if (totalAlive > 3) return;
 
             foreach (var p in NebulaGameManager.Instance!.AllPlayerInfo())
             {
                 if (p.IsDead) continue;
+                totalAlive++;
                 if (p.Unbox().TryGetModifier<Lover.Instance>(out var lover)){
                     if (lover.MyLover?.IsDead ?? true) continue;
 
                     NebulaAPI.CurrentGame?.TriggerGameEnd(NebulaGameEnd.LoversWin, GameEndReason.Situation);
                 }
-
             }
-
-            return;
         }
     };
 
     private class JesterCriteria : IModule, IGameOperator
     {
-        [OnlyHost]
         void OnExiled(PlayerExiledEvent ev) 
         {
             if (ev.Player?.Role.Role == Roles.Neutral.Jester.MyRole) NebulaAPI.CurrentGame?.TriggerGameEnd(NebulaGameEnd.JesterWin, GameEndReason.Special, BitMasks.AsPlayer(1u << ev.Player.PlayerId));
         }
     };
+
+    private class PavlovCriteria : IModule, IGameOperator
+    {
+        void OnUpdate(GameUpdateEvent ev)
+        {
+            var criteriaUpdateEvent = new CriteriaUpdateEvent(NebulaGameEnd.PavlovWin, GameEndReason.Situation);
+            GameOperatorManager.Instance?.Run(criteriaUpdateEvent);
+            if (criteriaUpdateEvent.blockWinning) return;
+
+            var roleData = GetRoleData();
+            if (roleData.allEvil - roleData.pavlov > 0) return;
+
+            foreach (var pavlov in NebulaGameManager.Instance!.AllPlayerInfo().Where((p) => p.Role.Role == Roles.Neutral.Pavlov.MyRole))
+            {
+                var pRole = (pavlov.Role as Roles.Neutral.Pavlov.Instance);
+
+                int alivePavlovs = NebulaGameManager.Instance!.AllPlayerInfo().Count(p => !p.IsDead && (pRole!.IsSameTeam(p)));
+
+                if (alivePavlovs < roleData.pavlov) continue;
+
+                if (alivePavlovs * 2 >= roleData.totalAlive) NebulaAPI.CurrentGame?.TriggerGameEnd(NebulaGameEnd.PavlovWin, GameEndReason.Situation);
+            }
+        }
+    }
+
+    private class MoriartyCriteria : IModule, IGameOperator
+    {
+        void OnUpdate(GameUpdateEvent ev)
+        {
+            var criteriaUpdateEvent = new CriteriaUpdateEvent(NebulaGameEnd.MoriartyWin, GameEndReason.Situation);
+            GameOperatorManager.Instance?.Run(criteriaUpdateEvent);
+            if (criteriaUpdateEvent.blockWinning) return;
+
+            var roleData = GetRoleData();
+            if (roleData.allEvil - roleData.pavlov > 0) return;
+
+            foreach (var moriarty in NebulaGameManager.Instance!.AllPlayerInfo().Where((p) => p.Role.Role == Roles.Neutral.Moriarty.MyRole))
+            {
+                var pRole = (moriarty.Role as Roles.Neutral.Moriarty.Instance);
+
+                int aliveMoriarty = NebulaGameManager.Instance!.AllPlayerInfo().Count(p => !p.IsDead && (pRole!.IsSameTeam(p)));
+
+                if (aliveMoriarty < roleData.moriarty) continue;
+
+                if (aliveMoriarty * 2 >= roleData.totalAlive) NebulaAPI.CurrentGame?.TriggerGameEnd(NebulaGameEnd.MoriartyWin, GameEndReason.Situation);
+            }
+        }
+    }
 }
 
 public class CriteriaManager
@@ -215,6 +326,8 @@ public class CriteriaManager
     public void CheckAndTriggerGameEnd()
     {
         if (!AmongUsClient.Instance.AmHost) return;
+
+        //if (AssassinSystem.isAssassinMeeting) return;
 
         //終了条件が確定済みなら何もしない
         if (NebulaGameManager.Instance?.EndState != null) return;

@@ -1,5 +1,7 @@
 ﻿using Nebula.Behaviour;
 using Nebula.Game.Statistics;
+using Nebula.Roles.Complex;
+using Nebula.Roles.Modifier;
 using Virial;
 using Virial.Events.Game;
 using Virial.Events.Game.Meeting;
@@ -16,8 +18,8 @@ public static class ModPreSpawnInPatch
         {
             NebulaPreSpawnMinigame spawnInMinigame = UnityHelper.CreateObject<NebulaPreSpawnMinigame>("PreSpawnInMinigame", minigameParent, new Vector3(0, 0, -600f), LayerExpansion.GetUILayer());
             spawnInMinigame.Begin(null!);
-            yield return NebulaAPI.CurrentGame.GetModule<Synchronizer>()?.CoSync(Modules.SynchronizeTag.PreSpawnMinigame, true, false, false);
-            NebulaAPI.CurrentGame.GetModule<Synchronizer>()?.ResetSync(Modules.SynchronizeTag.PreSpawnMinigame);
+            yield return NebulaAPI.CurrentGame?.GetModule<Synchronizer>()?.CoSync(Modules.SynchronizeTag.PreSpawnMinigame, true, false, false);
+            NebulaAPI.CurrentGame?.GetModule<Synchronizer>()?.ResetSync(Modules.SynchronizeTag.PreSpawnMinigame);
             spawnInMinigame.CloseSpawnInMinigame();
 
             NebulaGameManager.Instance?.GameStatistics.RecordEvent(new GameStatistics.Event(eventVariation, null, 0, GameStatisticsGatherTag.Spawn) { RelatedTag = tag });
@@ -56,6 +58,7 @@ public static class NebulaExileWrapUp
 
                         //Entityイベント発火
                         GameOperatorManager.Instance?.Run(new PlayerExiledEvent(info), true);
+                        if (!SwapSystem.SwapInfos.IsEmpty() && NebulaAPI.CurrentGame?.LocalPlayer.Role is Swapper.NiceInstance or Swapper.EvilInstance && PlayerControl.LocalPlayer.PlayerId == info.PlayerId) new StaticAchievementToken("swapper.another");
                     }
                 }
 
@@ -143,18 +146,32 @@ class ExileControllerBeginPatch
 {
     public static void Prefix(ExileController __instance, [HarmonyArgument(0)] ref ExileController.InitProperties init)
     {
+        // exiled
+        init.networkedPlayer = MeetingHudExtension.ExiledAll?.FirstOrDefault()?.Data!;
+        //exiled = MeetingHudExtension.ExiledAll?.FirstOrDefault()?.Data!;
+
+        //tie
         init.voteTie = MeetingHudExtension.WasTie;
-        var first = MeetingHudExtension.ExiledAll?.FirstOrDefault();
-        init.networkedPlayer = first?.Data!;
-        init.outfit = first?.GetModInfo()!.DefaultOutfit.outfit;
-        init.isImpostor = first?.GetModInfo()!.IsImpostor ?? false;
+        //tie = MeetingHudExtension.WasTie;
 
         Debug.Log("Rewrite Exiled: " + (init.networkedPlayer?.PlayerName ?? "None"));
     }
 
     public static void Postfix(ExileController __instance, [HarmonyArgument(0)] ref ExileController.InitProperties init)
     {
-        if (init.networkedPlayer == null) return;
+        //MeetingHudがなぜか真になってしまうので、nullに書き換え
+        MeetingHud.Instance = null;
+        var exiled = Helpers.GetPlayer(init.networkedPlayer.PlayerId);
+
+        /*
+        if(AssassinSystem.isAssassinMeeting && AssassinSystem.targetId < 24)
+        {
+            __instance.completeString = Language.Translate("game.meeting.assassinFailed").Replace("%PLAYER%", Helpers.GetPlayer(AssassinSystem.targetId)?.name ?? string.Empty);
+            return;
+        }
+        */
+
+        if (exiled == null) return;
 
         if (MeetingHudExtension.IsObvious)
         {
@@ -166,10 +183,20 @@ class ExileControllerBeginPatch
         }
         else if (GeneralConfigurations.ShowRoleOfExiled)
         {
-            var role = NebulaGameManager.Instance.GetPlayer(init.networkedPlayer.PlayerId)?.Role;
+            //var role = NebulaGameManager.Instance?.GetPlayer(exiled.PlayerId)?.Role;
+            var role = exiled.GetModInfo()?.Role;
             if (role != null)
             {
-                __instance.completeString = Language.Translate("game.meeting.roleText").Replace("%PLAYER%", init.networkedPlayer.PlayerName).Replace("%ROLE%", role.Role.DisplayName);
+                var roleName = role.Role.DisplayName;
+                if(NebulaGameManager.Instance?.GetPlayer(exiled.PlayerId)?.Modifiers.Count() > 0)
+                {
+                    //foreach(var modifier in NebulaGameManager.Instance.GetPlayer(exiled.PlayerId)!.Modifiers)
+                    foreach(var modifier in exiled.GetModInfo()!.Modifiers)
+                    {
+                        roleName += " " + modifier.DisplayName;
+                    }
+                }
+                __instance.completeString = Language.Translate("game.meeting.roleText").Replace("%PLAYER%", exiled.GetModInfo()?.Name).Replace("%ROLE%", roleName);
                 if (role.Role == Roles.Neutral.Jester.MyRole) __instance.ImpostorText.text = Language.Translate("game.meeting.roleJesterText");
             }
         }

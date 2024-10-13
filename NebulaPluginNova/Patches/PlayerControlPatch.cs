@@ -1,8 +1,9 @@
 ﻿using AmongUs.Data.Player;
-using Hazel;
+using AmongUs.GameOptions;
 using Nebula.Behaviour;
 using Nebula.Game.Statistics;
 using PowerTools;
+using TMPro;
 using Virial.Events.Player;
 
 namespace Nebula.Patches;
@@ -21,7 +22,6 @@ public static class PlayerStartPatch
                 if (PlayerControl.LocalPlayer) DynamicPalette.RpcShareColor.Invoke(new DynamicPalette.ShareColorMessage() { playerId = PlayerControl.LocalPlayer.PlayerId }.ReflectMyColor());
             }))
             );
-
         //人数が多いと近くのコンソールも追跡できなくなるので、上限を緩和
         __instance.hitBuffer = new Collider2D[120];
     }
@@ -88,17 +88,7 @@ public static class PlayerUpdatePatch
     static void Postfix(PlayerControl __instance)
     {
         if (NebulaGameManager.Instance == null) return;
-        if (NebulaGameManager.Instance.GameState == NebulaGameStates.NotStarted)
-        {
-            bool showVanillaColor = ClientOption.AllOptions[ClientOption.ClientOptionType.ShowVanillaColor].Value == 1;
-            try
-            {
-                if (showVanillaColor) __instance.cosmetics.nameText.text = __instance.Data.PlayerName + " ■".Color(DynamicPalette.VanillaColorsPalette[__instance.PlayerId]);
-                else __instance.cosmetics.nameText.text = __instance.Data.PlayerName;
-            }
-            catch { }
-            return;
-        }
+        if (NebulaGameManager.Instance.GameState == NebulaGameStates.NotStarted) return;
 
         NebulaGameManager.Instance.GetPlayer(__instance.PlayerId)?.Unbox().Update();
 
@@ -112,6 +102,17 @@ public static class PlayerUpdatePatch
                 HudManager.Instance.ReportButton.SetDisabled();
                 HudManager.Instance.PetButton.SetDisabled();
             }
+
+            // 分配Last Impostor
+            if (!__instance.Data.IsDead
+                 && Roles.Modifier.LastImpostor.CanSpawnOption
+                 && !(__instance.GetModInfo()?.TryGetModifier<Roles.Modifier.LastImpostor.Instance>(out _) ?? true)
+                 && __instance.GetModInfo()?.Role.Role.Category == Virial.Assignable.RoleCategory.ImpostorRole
+                 && PlayerControl.AllPlayerControls.GetFastEnumerator().Count(
+                     (p) => !p.Data.IsDead && p.GetModInfo()?.Role.Role.Category == Virial.Assignable.RoleCategory.ImpostorRole) <= 1)
+            {
+                __instance.GetModInfo()?.Unbox().RpcInvokerSetModifier(Roles.Modifier.LastImpostor.MyRole, null!).InvokeSingle();
+            }
         }
         
 
@@ -121,6 +122,10 @@ public static class PlayerUpdatePatch
             scale.z = 100f;
             __instance.cosmetics.transform.localScale = scale;
         }
+        //if (__instance.GetModInfo()!.DeathTime > 0f && !__instance.Data.IsDead) __instance.Data.IsDead = true;
+
+        //Debug.Log(PlayerControl.AllPlayerControls.GetFastEnumerator().Count(
+        //         (p) => p.GetModInfo()?.Role.Role.Category == Virial.Assignable.RoleCategory.ImpostorRole));
     }
 }
 
@@ -210,6 +215,8 @@ class OverlayKillAnimationPatch
     {
         if (__instance.killerParts)
         {
+
+            //NetworkedPlayerInfo.PlayerOutfit? currentOutfit = NebulaGameManager.Instance?.GetPlayer(kInfo.PlayerId)?.Unbox().CurrentOutfit;
             NetworkedPlayerInfo.PlayerOutfit? currentOutfit = initData.killerOutfit;
             if (currentOutfit != null)
             {
@@ -220,8 +227,10 @@ class OverlayKillAnimationPatch
                 __instance.LoadKillerPet(currentOutfit);
             }
         }
+        //if (vInfo != null && __instance.victimParts)
         if (__instance.victimParts)
         {
+            //NetworkedPlayerInfo.PlayerOutfit? defaultOutfit = NebulaGameManager.Instance?.GetPlayer(vInfo.PlayerId)?.Unbox().DefaultOutfit;
             NetworkedPlayerInfo.PlayerOutfit? defaultOutfit = initData.victimOutfit;
             if (defaultOutfit != null)
             {
@@ -400,8 +409,9 @@ public static class KillOverlayPatch
 [HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.Initialize))]
 public static class OverlayKillAnimationInitializePatch
 {
-    public static void Postfix(OverlayKillAnimation __instance)
+     public static void Postfix(OverlayKillAnimation __instance)
     {
+        //if (kInfo.PlayerId == vInfo.PlayerId)
         if (KillOverlayPatch.NextIsSelfKill)
         {
             __instance.transform.GetChild(0).gameObject.SetActive(false);
@@ -555,18 +565,28 @@ public static class UseZiplinePatch
     }
 }
 
-[HarmonyPatch(typeof(NetworkedPlayerInfo), nameof(NetworkedPlayerInfo.Deserialize))]
-internal class RPCSealingPatch
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetKillTimer))]
+public static class KillTimerPatch
 {
-    static private bool lastIsDead = false;
-    static void Prefix(NetworkedPlayerInfo __instance, [HarmonyArgument(1)] ref bool initialState)
+    public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] float time)
     {
-        lastIsDead = __instance.IsDead;
-        initialState = true;
-    }
+        if (PlayerControl.LocalPlayer.GetModInfo() == null) return true;
 
-    static void Postfix(NetworkedPlayerInfo __instance)
-    {
-        __instance.IsDead = lastIsDead || __instance.Disconnected;
+        if (!(HudManager.Instance?.KillButton.isActiveAndEnabled ?? false)) return true;
+
+        if (AmongUsUtil.VanillaKillCoolDown <= 0f) return true;
+
+        float temp = AmongUsUtil.VanillaKillCoolDown;
+        //キルクールを設定する
+        if (__instance.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+        {
+            var ev = new PlayerSetKillTimerEvent(__instance.GetModInfo() ?? null!, time);
+            GameOperatorManager.Instance?.Run(ev);
+            temp = ev.Time;
+        }
+
+        __instance.killTimer = Mathf.Clamp(time, 0f, temp);
+        HudManager.Instance.KillButton.SetCoolDown(__instance.killTimer, AmongUsUtil.VanillaKillCoolDown);
+        return false;
     }
 }

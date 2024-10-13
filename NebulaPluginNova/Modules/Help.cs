@@ -324,7 +324,6 @@ public static class HelpScreen
     private static IMetaWidgetOld ShowPreviewSrceen(out Image? backImage)
     {
         backImage = null;
-
         var textAttr = GUI.API.GetAttribute(AttributeAsset.OverlayContent);
         var maskedAttr = GUI.API.GetAttribute(AttributeAsset.DocumentStandard);
         Virial.Media.GUIWidget GetAssignableText(DefinedAssignable assignable) => new NoSGUIText(GUIAlignment.Center, maskedAttr, new RawTextComponent(assignable.DisplayColoredName))
@@ -406,16 +405,15 @@ public static class HelpScreen
 
 
         var view = new GUIScrollView(GUIAlignment.Center, new(7.4f, HelpHeight - 0.68f), GUI.API.HorizontalHolder(GUIAlignment.Center, GetRoleOverview(RoleCategory.ImpostorRole,"impostor"), GetRoleOverview(RoleCategory.NeutralRole, "neutral"), GetRoleOverview(RoleCategory.CrewmateRole, "crewmate")));
-
+        
         //背景画像の選定
         bool CheckSpawnable(params ISpawnable[] spawnables)
         {
             return spawnables.All(s => s.IsSpawnable && (s is not DefinedRole dr || GeneralConfigurations.exclusiveAssignmentOptions.All(option => !option.OnAssigned(dr).Any(r => spawnables.Contains(r)))));
         }
-
         if (CheckSpawnable(Roles.Impostor.Sniper.MyRole, Roles.Impostor.Raider.MyRole))
             backImage = previewSpriteRaiderAndSniper;
-
+            
         return new MetaWidgetOld.WrappedWidget(new VerticalWidgetsHolder(GUIAlignment.Center, iconHolder, new NoSGUIMargin(GUIAlignment.Center, new(0f, 0.2f)), view));
     }
 }

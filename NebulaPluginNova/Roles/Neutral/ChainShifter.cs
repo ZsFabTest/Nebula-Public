@@ -111,11 +111,10 @@ public class ChainShifter : DefinedRoleTemplate, HasCitation, DefinedRole
                     Debug.Log("Test1");
                     //タスクに関する書き換え
                     int leftCrewmateTask = 0;
-                    int leftQuota = 0;
                     if (shiftTarget.Tasks.IsCrewmateTask && shiftTarget.Tasks.HasExecutableTasks)
                     {
-                        leftCrewmateTask = Mathf.Max(0, shiftTarget.Tasks.CurrentTasks - shiftTarget.Tasks.CurrentCompleted);
-                        leftQuota = Mathf.Max(0, shiftTarget.Tasks.Quota - shiftTarget.Tasks.TotalCompleted);
+                        leftCrewmateTask = Mathf.Max(0, shiftTarget.Tasks.Quota - shiftTarget.Tasks.TotalCompleted);
+
                     }
 
                     if (leftCrewmateTask > 0)
@@ -131,7 +130,6 @@ public class ChainShifter : DefinedRoleTemplate, HasCitation, DefinedRole
 
                         MyPlayer.Tasks.Unbox().ReplaceTasksAndRecompute(leftCrewmateTask - actualLongTasks - actualcommonTasks, actualLongTasks, actualcommonTasks);
                         MyPlayer.Tasks.Unbox().BecomeToCrewmate();
-                        MyPlayer.Tasks.Unbox().ReplaceTasks(leftCrewmateTask, leftQuota - leftCrewmateTask);
                     }
                     else
                     {
@@ -148,7 +146,17 @@ public class ChainShifter : DefinedRoleTemplate, HasCitation, DefinedRole
                     if (myGuess != -1) player.RpcInvokerSetModifier(GuesserModifier.MyRole, new int[] { myGuess }).InvokeSingle();
                     if (targetGuess != -1) MyPlayer.Unbox().RpcInvokerSetModifier(GuesserModifier.MyRole, new int[] { targetGuess }).InvokeSingle();
 
-
+                    // 矿工的隐藏附加的交换
+                    // if (player.TryGetModifier<Crewmate.MinerModifier.Instance>(out _))
+                    // {
+                    //     MyPlayer.Unbox().RpcInvokerSetModifier(Crewmate.MinerModifier.MyRole, null!);
+                    // }
+                    // if (player.TryGetModifier<AmnesiacModifier.Instance>(out var am))
+                    // {
+                    //     player.RpcInvokerUnsetModifier(AmnesiacModifier.MyRole).InvokeSingle();
+                    //     MyPlayer.Unbox().RpcInvokerSetModifier(AmnesiacModifier.MyRole, null!);
+                    // }
+                    // GameOperatorManager.Instance?.Run(new RequestEvent("TryExchangeAmnesiac", [player.PlayerId, MyPlayer.PlayerId]));
                 }
 
                 //会議終了からすぐにゲームが終了すればよい

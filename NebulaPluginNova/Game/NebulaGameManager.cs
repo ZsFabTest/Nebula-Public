@@ -257,7 +257,7 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
 
     public List<AchievementTokenBase> AllAchievementTokens = new();
     public T? GetAchievementToken<T>(string achievement) where T : AchievementTokenBase {
-        return AllAchievementTokens.FirstOrDefault(a=>a.Achievement.Id == achievement) as T;
+        return AllAchievementTokens.FirstOrDefault(a => a.Achievement.Id == achievement) as T;
     }
 
 
@@ -290,7 +290,7 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
     public Dictionary<byte, AbstractAchievement?> TitleMap = new();
 
     private GamePlayer? localInfoCache = null;
-    
+
     public GamePlayer LocalPlayerInfo { get
         {
             if (localInfoCache == null) localInfoCache = GetPlayer(PlayerControl.LocalPlayer.PlayerId);
@@ -305,7 +305,16 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
 
     //天界視点フラグ
     public bool CanBeSpectator { get; private set; }
-    public bool CanSeeAllInfo => CanBeSpectator && (ClientOption.AllOptions[ClientOption.ClientOptionType.SpoilerAfterDeath].Value == 1 || !HudManager.InstanceExists);
+    Func<bool> checkCanSeeAllInfo = () =>
+    {
+        //return false;
+        var re = new RequestEvent("checkCanSeeAllInfo");
+        GameOperatorManager.Instance?.Run(re);
+        return (Instance?.CanBeSpectator ?? false) && (ClientOption.AllOptions[ClientOption.ClientOptionType.SpoilerAfterDeath].Value == 1 || !HudManager.InstanceExists) && !re.requestResult;
+    };
+    public bool CanSeeAllInfo => checkCanSeeAllInfo.Invoke();
+
+    //public bool CanSeeAllInfo => false; // Test
     public void ChangeToSpectator(bool tryGhostAssignment = true)
     {
         if (CanBeSpectator) return;
@@ -318,11 +327,17 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
 
         new SpectatorsAbility().Register(this);
     }
+    /// <summary>
+    /// 用于本模组内的修改旁观
+    /// </summary>
+    /// <param name="value"></param>
+    internal void SetSpectator(bool value) => CanBeSpectator = value;
 
     //ゲーム内履歴
     public List<RoleHistory> RoleHistory = new();
 
     static private SpriteLoader vcConnectSprite = SpriteLoader.FromResource("Nebula.Resources.Buttons.VCReconnectButton.png", 100f);
+    static private SpriteLoader quickStartSprite = SpriteLoader.FromResource("Nebula.Resources.Buttons.QuickStartButton.png", 100f);
     public NebulaGameManager()
     {
         allModPlayers = new();
@@ -338,6 +353,18 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
         vcConnectButton.SetLabel("rejoin");
 
         VoiceChatManager = GeneralConfigurations.UseVoiceChatOption ? new() : null;
+
+        var quickStartButton = new Modules.ScriptComponents.ModAbilityButton(true);
+        quickStartButton.Visibility = (_) => Configuration.GeneralConfigurations.PutQuickStartButtonOnLeftOption && AmongUsClient.Instance && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.GameState == InnerNet.InnerNetClient.GameStates.Joined && GameStartManager.Instance;
+        quickStartButton.Availability = (_) => GameState == NebulaGameStates.NotStarted;
+        quickStartButton.SetSprite(quickStartSprite.GetSprite());
+        quickStartButton.OnClick = (_) =>
+        {
+            GameStartManager.Instance.startState = GameStartManager.StartingStates.Countdown;
+            GameStartManager.Instance.FinallyBegin();
+        };
+        quickStartButton.SetLabel("quickStart");
+        //*/
     }
 
 
@@ -507,7 +534,10 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
 
             //ローカルモジュール
             AttributeShower.Update(localModInfo);
+
+            //Patches.AddChat.Update();
         }
+
     }
 
     public void OnFixedUpdate() {
@@ -549,6 +579,8 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
         HudManager.Instance.UpdateHudContent();
 
         ConsoleRestriction?.OnGameStart();
+
+        //Patches.AddChat.Initialize();
     }
 
     public void OnGameEnd()
@@ -560,7 +592,7 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
         //自身が勝利している場合
         if (EndState!.Winners.Test(PlayerControl.LocalPlayer.GetModInfo())) {
             //生存しているマッドメイト除くクルー陣営
-            var aliveCrewmate = allModPlayers.Values.Where(p => !p.IsDead && p.Role.Role.Category == RoleCategory.CrewmateRole && p.Role.Role != Madmate.MyRole);
+            var aliveCrewmate = allModPlayers.Values.Where(p => !p.IsDead && p.Role.Role.Category == RoleCategory.CrewmateRole && !p.IsMadmate());
             int aliveCrewmateCount = aliveCrewmate?.Count() ?? 0;
             if (EndState!.EndReason == GameEndReason.Task)
             {
@@ -578,6 +610,7 @@ internal class NebulaGameManager : AbstractModuleContainer, IRuntimePropertyHold
         }
 
         if (Helpers.CurrentMonth == 9 && NebulaGameManager.Instance!.RoleHistory.Count(h => !h.IsModifier && h.PlayerId == NebulaGameManager.Instance.LocalPlayerInfo.PlayerId) >= 6) new StaticAchievementToken("autumnSky");
+        //Patches.AddChat.CleanUp();
     }
 
     public GamePlayer? GetPlayer(byte playerId)

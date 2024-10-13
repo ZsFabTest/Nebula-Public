@@ -250,17 +250,6 @@ public static class MainMenuSetUpPatch
                     inner.Append(new CombinedWidgetOld(0.5f, placable.ToArray()) { Alignment = IMetaWidgetOld.AlignmentOption.Left });
                 }
 
-                if ((category ?? ModUpdater.ReleasedInfo.ReleaseCategory.Major) == ModUpdater.ReleasedInfo.ReleaseCategory.Major)
-                    AutoUpdateContent("version.fetching.autoUpdate.major", () => NebulaLoader.NebulaLoader.AutoUpdate.Value && !NebulaLoader.NebulaLoader.UseSnapshot.Value, () => {
-                        NebulaLoader.NebulaLoader.AutoUpdate.Value = true;
-                        NebulaLoader.NebulaLoader.UseSnapshot.Value = false;
-                    });
-                if ((category ?? ModUpdater.ReleasedInfo.ReleaseCategory.Snapshot) == ModUpdater.ReleasedInfo.ReleaseCategory.Snapshot)
-                    AutoUpdateContent("version.fetching.autoUpdate.snapshot", ()=> NebulaLoader.NebulaLoader.AutoUpdate.Value && NebulaLoader.NebulaLoader.UseSnapshot.Value, () => {
-                        NebulaLoader.NebulaLoader.AutoUpdate.Value = true;
-                        NebulaLoader.NebulaLoader.UseSnapshot.Value = true;
-                    });
-
                 foreach (var version in versions)
                 {
                     if (category != null && version.Category != category) continue;
@@ -277,7 +266,7 @@ public static class MainMenuSetUpPatch
                             {
                                 var button = text.gameObject.SetUpButton(true);
                                 button.gameObject.AddComponent<BoxCollider2D>().size = text.rectTransform.sizeDelta;
-                                button.OnClick.AddListener(() => Application.OpenURL(Helpers.ConvertUrl("https://github.com/Dolly1016/Nebula/releases/tag/" + version.RawTag)));
+                                button.OnClick.AddListener(() => Application.OpenURL(Helpers.ConvertUrl("https://github.com/ZsFabTest/Nebula-R/releases/tag/" + version.RawTag)));
                                 button.OnMouseOver.AddListener(() =>
                                 {
                                     text.color = Color.green;

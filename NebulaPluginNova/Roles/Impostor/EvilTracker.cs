@@ -131,7 +131,6 @@ public class EvilTracker : DefinedRoleTemplate, HasCitation, DefinedRole
         private void TryRegisterArrow(GamePlayer player) { if(!impostorArrows.Any(a => a.MyPlayer == player)) impostorArrows.Add(Bind(new TrackingArrowAbility(player.Unbox(), 0f, Palette.ImpostorRed)).Register()); }
 
         //役職変化に応じて矢印を付ける
-        [Local]
         void OnSetRole(PlayerRoleSetEvent ev)
         {
             if (TrackImpostorsOption)

@@ -1,15 +1,14 @@
-# Nebula on the Ship
+# Nebula on the Ship - Remake
 <p align="center">
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.</p>
 
-# クレジットとリソース
+# 版权及引用的资源
 
-いずれも、敬称略
-
-[BepInEx](https://github.com/BepInEx) ゲームの関数をフックするために使用しています。\
-[The Other Roles](https://github.com/Eisbison/TheOtherRoles) このMODの着想の根源はすべてここからのものです。クレジット表記の為、画像データを一部借用しています。\
-[TheOtherRoles: GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM) MadmateのアイデアはこのMODからのものです。\
-[Town Of Impostors](https://github.com/Town-of-Impostors/TownOfImpostors) Sniper,Necromancer,MayorのアイデアはこのMODからのものです。\
+[BepInEx](https://github.com/BepInEx) 提供了插件开发环境。\
+[The Other Roles](https://github.com/Eisbison/TheOtherRoles) 本家灵感来源 主要插件的的鼻祖之一。\
+[TheOtherRoles: GM Edition](https://github.com/yukinogatari/TheOtherRoles-GM) 提供了叛徒等优秀职业。\
+[Town Of Impostors](https://github.com/Town-of-Impostors/TownOfImpostors) 提供了狙击手、死灵法师、市长等优秀职业。\
+[Nebula-R-LTS](https://github.com/ZsFabTest/Nebula-R-LTS) 本项目的前身。 \
 
 **イラストのご提供**\
 かつどん\

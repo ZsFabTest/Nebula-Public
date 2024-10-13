@@ -14,11 +14,12 @@ using Virial.Events.Game;
 
 namespace Nebula.Roles.Ghost.Impostor;
 
-public class Clog : DefinedGhostRoleTemplate, DefinedGhostRole
+public class Clog : DefinedGhostRoleTemplate, HasCitation, DefinedGhostRole
 {
     public Clog() : base("clog", new(Palette.ImpostorRed), RoleCategory.ImpostorRole, [GhostDurationOption, NumOfGhostsOption, GhostSizeOption]) {
         MetaAbility.RegisterCircle(new("role.clog.ghostSize", () => GhostSizeOption, () => null, UnityColor));
     }
+    Citation? HasCitation.Citaion => Citations.NebulaOnTheShip;
 
     string ICodeName.CodeName => "CLG";
 
@@ -81,9 +82,16 @@ public class Clog : DefinedGhostRoleTemplate, DefinedGhostRole
             var ghost = new Nebula.Roles.Crewmate.Ghost(pos, GhostDurationOption, null, Seer.CanSeeGhostsInShadowOption, GhostSizeOption);
             if (calledBeMe)
             {
+                float timeBeing = 0f;
                 bool achieved = false;
-                GameOperatorManager.Instance?.Register<GameUpdateEvent>(ev => { 
-                    if(!achieved && NebulaGameManager.Instance!.AllPlayerInfo().Any(p => !p.IsDead && !p.AmOwner && p.IsImpostor && pos.Distance(p.Position) < 0.75f))
+                GameOperatorManager.Instance?.Register<GameUpdateEvent>(ev => {
+                    timeBeing += Time.deltaTime;
+                    if (timeBeing > GhostDurationOption)
+                    {
+                        ghost.ReleaseIt();
+                        ghost = null;
+                    }
+                    if (!achieved && NebulaGameManager.Instance!.AllPlayerInfo().Any(p => !p.IsDead && !p.AmOwner && p.IsImpostor && pos.Distance(p.Position) < 0.75f))
                     {
                         new StaticAchievementToken("clog.another1");
                         achieved = true;

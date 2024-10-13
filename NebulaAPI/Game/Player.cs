@@ -114,7 +114,6 @@ public static class PlayerAttributes
     /// モザイク効果を表します。
     /// </summary>
     static public IPlayerAttribute Roughening { get; internal set; }
-
     /// <summary>
     /// Thuriferの感染状態を表します。
     /// </summary>

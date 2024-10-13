@@ -12,7 +12,7 @@ using Virial.Game;
 
 namespace Nebula.Roles.Neutral;
 
-public class Avenger : DefinedRoleTemplate, DefinedRole
+public class Avenger : DefinedRoleTemplate, HasCitation, DefinedRole
 {
     static public RoleTeam MyTeam = new Team("teams.avenger", new(141,111,131), TeamRevealType.OnlyMe);
     private Avenger() : base("avenger", MyTeam.Color, RoleCategory.NeutralRole, MyTeam,
@@ -21,6 +21,7 @@ public class Avenger : DefinedRoleTemplate, DefinedRole
     {
         ConfigurationHolder?.ScheduleAddRelated(() => [Modifier.Lover.MyRole.ConfigurationHolder!]);
     }
+    Citation? HasCitation.Citaion => Citations.NebulaOnTheShip_Old;
 
     AllocationParameters? DefinedSingleAssignable.AllocationParameters => null;
 
@@ -62,7 +63,7 @@ public class Avenger : DefinedRoleTemplate, DefinedRole
         {
             if (AmOwner)
             {
-                NebulaAPI.CurrentGame?.GetModule<TitleShower>()?.SetText("You became AVENGER.", MyRole.RoleColor.ToUnityColor(), 5.5f, true);
+                NebulaAPI.CurrentGame?.GetModule<TitleShower>()?.SetText(Language.Translate("role.avenger.becomeAvengerTitle"), MyRole.RoleColor.ToUnityColor(), 5.5f, true);
                 AmongUsUtil.PlayCustomFlash(MyRole.RoleColor.ToUnityColor(), 0f, 0.8f, 0.7f);
 
                 var killTracker = Bind(ObjectTrackers.ForPlayer(null, MyPlayer, ObjectTrackers.StandardPredicate));
@@ -78,12 +79,12 @@ public class Avenger : DefinedRoleTemplate, DefinedRole
                 killButton.SetLabelType(Virial.Components.ModAbilityButton.LabelType.Impostor);
                 killButton.SetLabel("kill");
 
-                if (target != null) Bind(new TrackingArrowAbility(target, NotificationForAvengerIntervalOption, MyRole.RoleColor.ToUnityColor(), false)).Register();
+                if (target != null) Bind(new TrackingArrowAbility(target, NotificationForAvengerIntervalOption, MyRole.RoleColor.ToUnityColor())).Register();
             }
 
             if (target?.AmOwner ?? false)
             {
-                if (TargetCanKnowAvengerOption) Bind(new TrackingArrowAbility(MyPlayer, NotificationForMurdererIntervalOption, MyRole.RoleColor.ToUnityColor(), false)).Register();
+                if (TargetCanKnowAvengerOption) Bind(new TrackingArrowAbility(MyPlayer, NotificationForMurdererIntervalOption, MyRole.RoleColor.ToUnityColor())).Register();
                 if (AvengerFlashForMurdererOption) AmongUsUtil.PlayFlash(MyRole.RoleColor.ToUnityColor());
             }
         }

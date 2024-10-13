@@ -1,6 +1,5 @@
 ﻿using Nebula.Compat;
 using Nebula.Game.Statistics;
-using Nebula.Roles.Complex;
 using Nebula.Roles.Modifier;
 using Nebula.VoiceChat;
 using Virial;
@@ -34,7 +33,8 @@ public class Jackal : DefinedRoleTemplate, HasCitation, DefinedRole
     public static bool IsJackal(GamePlayer player, int teamId)
     {
         if (player.Role is Instance j) return j.JackalTeamId == teamId;
-        if(player.Role is Sidekick.Instance s) return s.JackalTeamId == teamId;
+        if (player.Role is Sidekick.Instance s) return s.JackalTeamId == teamId;
+        if (player.Role is SchrödingersCat.InstanceJackal) return true;
         return player.Unbox().GetModifiers<SidekickModifier.Instance>().Any(m => m.JackalTeamId == teamId);
     }
 
@@ -67,12 +67,14 @@ public class Jackal : DefinedRoleTemplate, HasCitation, DefinedRole
             if (player == null) return false;
             if (player.Role is Sidekick.Instance sidekick && sidekick.JackalTeamId == JackalTeamId) return true;
             if (player.Unbox().AllModifiers.Any(m => m is SidekickModifier.Instance sidekick && sidekick.JackalTeamId == JackalTeamId)) return true;
+            if (player.Role is SchrödingersCat.InstanceJackal) return true;
             return false;
         }
 
         public bool IsSameTeam(GamePlayer? player)
         {
             if (IsMySidekick(player)) return true;
+            if (player?.Role is SchrödingersCat.InstanceJackal) return true;
             if (player?.Role is Instance jackal && jackal.JackalTeamId == JackalTeamId) return true;
             return false;
         }
@@ -89,7 +91,7 @@ public class Jackal : DefinedRoleTemplate, HasCitation, DefinedRole
 
                 bool hasSidekick = false;
 
-                var myTracker = Bind(ObjectTrackers.ForPlayer(null, MyPlayer, (p) => ObjectTrackers.StandardPredicate(p) && !IsMySidekick(p), null, Impostor.Impostor.CanKillHidingPlayerOption));
+                var myTracker = Bind(ObjectTrackers.ForPlayer(null, MyPlayer, (p) => ObjectTrackers.StandardPredicate(p) && !IsMySidekick(p), Palette.ImpostorRed, Impostor.Impostor.CanKillHidingPlayerOption));
 
                 SpriteRenderer? lockSprite = null;
                 TMPro.TextMeshPro? leftText = null;
@@ -250,11 +252,11 @@ file static class SidekickAchievementChecker
 
 public class Sidekick : DefinedRoleTemplate, HasCitation, DefinedRole
 {
-    private Sidekick() : base("sidekick", Jackal.MyTeam.Color, RoleCategory.NeutralRole, Jackal.MyTeam, [IsModifierOption, SidekickCanKillOption, CanCreateSidekickChainlyOption, KillCoolDownOption], false, optionHolderPredicate: ()=> (Jackal.MyRole as DefinedRole).IsSpawnable && Jackal.CanCreateSidekickOption ) {
+    private Sidekick() : base("sidekick", Jackal.MyTeam.Color, RoleCategory.NeutralRole, Jackal.MyTeam, [IsModifierOption, SidekickCanKillOption, CanCreateSidekickChainlyOption, KillCoolDownOption], false, optionHolderPredicate: () => Jackal.CanCreateSidekickOption && ((DefinedRole)Jackal.MyRole).IsSpawnable) {
         ConfigurationHolder?.ScheduleAddRelated(() => [Jackal.MyRole.ConfigurationHolder!]);
         ConfigurationHolder!.Title = ConfigurationHolder.Title.WithComparison("role.jackal.sidekick.name");
     }
-    IEnumerable<DefinedAssignable> DefinedAssignable.AchievementGroups => [Sidekick.MyRole, MyRole];
+
     string DefinedAssignable.InternalName => "jackal.sidekick";
     Citation? HasCitation.Citaion => Citations.TheOtherRoles;
 
@@ -315,7 +317,7 @@ public class SidekickModifier : DefinedModifierTemplate, HasCitation, DefinedMod
 {
     static public SidekickModifier MyRole = new SidekickModifier();
     private SidekickModifier() : base("sidekick", Jackal.MyTeam.Color, withConfigurationHolder: false) { }
-    IEnumerable<DefinedAssignable> DefinedAssignable.AchievementGroups => [Sidekick.MyRole, MyRole];
+
     Citation? HasCitation.Citaion => Citations.TheOtherRoles;
     RuntimeModifier RuntimeAssignableGenerator<RuntimeModifier>.CreateInstance(GamePlayer player, int[] arguments) => new Instance(player, arguments.Get(0, 0));
     public class Instance : RuntimeAssignableTemplate, RuntimeModifier

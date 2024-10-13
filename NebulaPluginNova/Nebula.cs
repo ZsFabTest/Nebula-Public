@@ -32,19 +32,20 @@ using System.Reflection.Metadata;
 
 namespace Nebula;
 
-public class NebulaPlugin
+[BepInPlugin(PluginGuid, PluginName, PluginVersion)]
+[BepInProcess("Among Us.exe")]
+public class NebulaPlugin : BasePlugin
 {
-    public const string AmongUsVersion = "2023.7.12";
-    public const string PluginGuid = "jp.dreamingpig.amongus.nebula";
-    public const string PluginName = "NebulaOnTheShip";
-    public const string PluginVersion = "2.9.1.1";
+    public const string AmongUsVersion = "2024.9.4s";
+    public const string PluginGuid = "com.github.zsfabtest.nebular";
+    public const string PluginName = "NebulaOnTheShip-Remake";
+    public const string PluginVersion = "2.0.3";
 
-    //public const string VisualVersion = "v2.9.1.1";
-    public const string VisualVersion = "Snapshot 24.09.15a";
-    //public const string VisualVersion = "DEMO";
+    //public const string VisualVersion = "v2.0.3";
+    public const string VisualVersion = "Snapshot 24w41a";
 
-    public const string PluginEpochStr = "105";
-    public const string PluginBuildNumStr = "1220";
+    public const string PluginEpochStr = "104";
+    public const string PluginBuildNumStr = "1133";
     public static readonly int PluginEpoch = int.Parse(PluginEpochStr);
     public static readonly int PluginBuildNum = int.Parse(PluginBuildNumStr);
     public const bool GuardVanillaLangData = false;
@@ -69,7 +70,7 @@ public class NebulaPlugin
 
     public static string GetNebulaVersionString()
     {
-        return "NoS " + VisualVersion;
+        return "NoS-R " + VisualVersion;
     }
 
     static public Harmony Harmony = new Harmony(PluginGuid);
@@ -78,14 +79,17 @@ public class NebulaPlugin
     public bool IsPreferential => Log.IsPreferential;
     public static NebulaPlugin MyPlugin { get; private set; } = null!;
     public static BasePlugin LoaderPlugin = null!;
-    static public void Load()
+
+    public override void Load()
     {
         Assembly.Load(StreamHelper.OpenFromResource("Nebula.Resources.API.NAudio.Core.dll")!.ReadBytes());
         Assembly.Load(StreamHelper.OpenFromResource("Nebula.Resources.API.NAudio.Wasapi.dll")!.ReadBytes());
         Assembly.Load(StreamHelper.OpenFromResource("Nebula.Resources.API.NAudio.WinMM.dll")!.ReadBytes());
         Assembly.Load(StreamHelper.OpenFromResource("Nebula.Resources.API.OpusDotNet.dll")!.ReadBytes());
         Assembly.Load(StreamHelper.OpenFromResource("Nebula.Resources.API.NebulaAPI.dll")!.ReadBytes());
-        
+
+        CheckRegionInfo();
+
         Harmony.PatchAll();
 
         SceneManager.sceneLoaded += (UnityEngine.Events.UnityAction<Scene, LoadSceneMode>)((scene, loadMode) =>
@@ -103,6 +107,19 @@ public class NebulaPlugin
     static private void SetUpNebulaImpl()
     {
         NebulaAPI.instance = new NebulaImpl();
+    }
+
+    private static void CheckRegionInfo()
+    {
+        // if(!File.Exists(Path.Combine(Paths.GameRootPath, "RegionInfo") + "/regionInfo.json"))
+        // {
+            var bytes = StreamHelper.OpenFromResource("Nebula.Resources.RegionInfo.regionInfo.json")!.ReadBytes();
+            if (!Directory.Exists(Path.Combine(Paths.GameRootPath, "RegionInfo")))
+                Directory.CreateDirectory(Path.Combine(Paths.GameRootPath, "RegionInfo"));
+            var fileStream = File.Create(Path.Combine(Paths.GameRootPath, "RegionInfo") + "/regionInfo.json");
+            fileStream.Write(bytes, 0, bytes.Length);
+            fileStream.Close();
+        // }
     }
 }
 

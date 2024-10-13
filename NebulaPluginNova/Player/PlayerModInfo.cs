@@ -4,9 +4,8 @@ using NAudio.CoreAudioApi;
 using Nebula.Behaviour;
 using Nebula.Compat;
 using Nebula.Game.Statistics;
-using Nebula.Roles;
-using Nebula.Roles.Complex;
 using Nebula.Roles.Impostor;
+using Nebula.Roles.Complex;
 using System.Diagnostics.CodeAnalysis;
 using Virial.Assignable;
 using Virial.Command;
@@ -15,7 +14,6 @@ using Virial.DI;
 using Virial.Events.Player;
 using Virial.Game;
 using Virial.Text;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Nebula.Player;
 
@@ -46,6 +44,9 @@ public static class PlayerState
     public static TranslatableTag Cursed = new("state.cursed");
     public static TranslatableTag Crushed = new("state.crushed");
     public static TranslatableTag Frenzied = new("state.frenzied");
+    public static TranslatableTag Exploded = new("state.exploded");
+    public static TranslatableTag Judged = new("state.judged");
+    public static TranslatableTag Misjudged = new("state.misjudged");
     public static TranslatableTag Gassed = new("state.gassed");
 
     static PlayerState()
@@ -62,6 +63,9 @@ public static class PlayerState
         Virial.Text.PlayerStates.Suicide = Suicide;
         Virial.Text.PlayerStates.Revived = Revived;
         Virial.Text.PlayerStates.Pseudocide = Pseudocide;
+        Virial.Text.PlayerStates.Exploded = Exploded;
+        Virial.Text.PlayerStates.Judged = Judged;
+        Virial.Text.PlayerStates.Misjudged = Misjudged;
         Virial.Text.PlayerStates.Gassed = Gassed;
     }
 }
@@ -114,7 +118,7 @@ public class PlayerAttributeImpl : IPlayerAttribute
         PlayerAttributes.ScreenSize = new PlayerAttributeImpl(8, "$screenSize", "screenSize");
         PlayerAttributes.Eyesight = new PlayerAttributeImpl(9, "$eyesight", "eyesight");
         PlayerAttributes.Roughening = new PlayerAttributeImpl(10, "$rough", "rough");
-
+    
         PlayerAttributes.Thurifer = new PlayerAttributeImpl(11, "$thurifer", "thurifer");
     }
 }
@@ -316,6 +320,7 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
         if (lastColor != currentColor)
         {
             //色が変化したとき
+
             if (AmOwner && Helpers.CurrentMonth == 4 && ColorHelper.IsLightGreen(Palette.PlayerColors[lastColor]) && ColorHelper.IsPink(Palette.PlayerColors[currentColor]))
             {
                 Debug.Log("sakura");
@@ -326,7 +331,6 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
             {
                 //カモフラージュが解けたら、次の瞬間にパーティーメンバーをチェックする
                 NebulaManager.Instance.ScheduleDelayAction(() => {
-
                     var localPos = PlayerControl.LocalPlayer.transform.position;
                     var count = NebulaGameManager.Instance!.AllPlayerInfo().Count(p => !p.AmOwner && p.VanillaPlayer.transform.position.Distance(localPos) < 1f && MoreCosmic.GetTags(p.CurrentOutfit.outfit).Any(tag => tag == "hat.party" || tag == "visor.party"));
                     if (count >= 2) new StaticAchievementToken("costume.partyCamo");
@@ -370,6 +374,7 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
         AssignableAction(r => r.DecorateNameConstantly(ref text, NebulaGameManager.Instance?.CanSeeAllInfo ?? false));
         var ev = GameOperatorManager.Instance?.Run(new PlayerDecorateNameEvent(this, text));
         var color = (ev?.Color.HasValue ?? false) ? ev.Color.Value.ToUnityColor() : Color.white;
+        text = ev?.Name ?? text;
 
         if (showDefaultName && !CurrentOutfit.PlayerName.Equals(DefaultName))
             text += (" (" + DefaultName + ")").Color(Color.gray);
@@ -380,7 +385,7 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
 
     static public readonly Color FakeTaskColor = new Color(0x86 / 255f, 0x86 / 255f, 0x86 / 255f);
     static public readonly Color CrewTaskColor = new Color(0xFA / 255f, 0xD9 / 255f, 0x34 / 255f);
-    public void UpdateRoleText(TMPro.TextMeshPro roleText) {
+    public void UpdateRoleText(TMPro.TextMeshPro roleText, string OracleInfo = "<Nothing>") {
 
         string text = "";
 
@@ -391,7 +396,7 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
 
             AssignableAction(r => { var newName = r.OverrideRoleName(text, false); if (newName != null) text = newName; });
 
-            if (HasAnyTasks && ((this as GamePlayer).Tasks.Quota > 0 || (this as GamePlayer).Tasks.TotalTasks > 0))
+            if (HasAnyTasks && (this as GamePlayer).Tasks.Quota > 0)
                 text += (" (" + (this as GamePlayer).Tasks.Unbox().ToString((NebulaGameManager.Instance?.CanSeeAllInfo ?? false) || !AmongUsUtil.InCommSab) + ")").Color((FeelLikeHaveCrewmateTasks) ? CrewTaskColor : FakeTaskColor);
         }
 
@@ -713,7 +718,7 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
         foreach (var a in PlayerAttributeImpl.AllAttributes)
         {
             //自認できない属性
-            if (!a.CanCognize(this)) continue;
+            if (!a?.CanCognize(this) ?? true) continue;
 
             float max = 0f, current = 0f;
             bool isPermanent = false;
@@ -727,12 +732,14 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
             if (max > 0f && current > 0f) yield return isPermanent ? (a, 0f) : (a, current / max);
         }
 
+
         //香気の表示
         if(ModSingleton<Thurifer.ThuribulumManager>.Instance != null)
         {
             var percentage = ModSingleton<Thurifer.ThuribulumManager>.Instance.LocalInhalationPercentage;
             if(percentage > 0f) yield return (PlayerAttributes.Thurifer, percentage);
         }
+
     }
 
     public void OnSetAttribute(IPlayerAttribute attribute)
@@ -1003,14 +1010,9 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
                     var isAcrossWalls = VisibilityCheckVectors.All(v => Helpers.AnyNonTriggersBetween(pos, myPos + v * 0.22f, out _, objectMask));
 
                     var mag = isAcrossWalls ? 0.22f : 0.4f;
-
-                    //いずれかの追加ライトの範囲内にいない場合
-                    if (!LightInfo.AllLightInfo.Any(info => VisibilityCheckVectors.Any(vec => info.CheckPoint(vec))))
-                    {
-                        isInShadow = VisibilityCheckVectors.All(v => Helpers.AnyCustomNonTriggersBetween(pos, myPos + v * mag,
-                            collider => LightSource.OneWayShadows.TryGetValue(collider.gameObject, out var oneWayShadows) ? !oneWayShadows.IsIgnored(light) : true,
-                            shadowMask));
-                    }
+                    isInShadow = VisibilityCheckVectors.All(v => Helpers.AnyCustomNonTriggersBetween(pos, myPos + v * mag,
+                        collider => LightSource.OneWayShadows.TryGetValue(collider.gameObject, out var oneWayShadows) ? !oneWayShadows.IsIgnored(light) : true,
+                        shadowMask));
                 }
 
                 IsInShadowCache = isInShadow;
@@ -1066,8 +1068,6 @@ internal class PlayerModInfo : AbstractModuleContainer, IRuntimePropertyHolder, 
         UpdateHoldingDeadBody();
         UpdateMouseAngle();
         UpdateModulators();
-
-        LightInfo.UpdateLightInfo();
         UpdateVisibility(true, !NebulaGameManager.Instance.WideCamera.DrawShadow);
     }
 

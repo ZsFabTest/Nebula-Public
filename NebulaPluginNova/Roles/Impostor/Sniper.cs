@@ -18,6 +18,7 @@ public class Sniper : DefinedRoleTemplate, HasCitation, DefinedRole
 {
     private Sniper() : base("sniper", new(Palette.ImpostorRed), RoleCategory.ImpostorRole, Impostor.MyTeam, [SnipeCoolDownOption, ShotSizeOption,ShotEffectiveRangeOption,ShotNoticeRangeOption,StoreRifleOnFireOption,StoreRifleOnUsingUtilityOption,CanSeeRifleInShadowOption,CanKillHidingPlayerOption,AimAssistOption,DelayInAimAssistOption, CanKillImpostorOption]) {
         ConfigurationHolder?.AddTags(ConfigurationTags.TagFunny, ConfigurationTags.TagDifficult);
+
         ConfigurationHolder!.Illustration = new NebulaSpriteLoader("Assets/NebulaAssets/Sprites/Configurations/Sniper.png");
 
         MetaAbility.RegisterCircle(new("role.sniper.shotRange", () => ShotEffectiveRangeOption, () => null, UnityColor));
@@ -85,8 +86,6 @@ public class Sniper : DefinedRoleTemplate, HasCitation, DefinedRole
 
                 //インポスターは無視
                 if (!CanKillImpostorOption && p.IsImpostor) continue;
-
-                //吹っ飛ばされているプレイヤーは無視しない
 
                 //不可視なプレイヤーは無視
                 if (p.Unbox().IsInvisible) continue;

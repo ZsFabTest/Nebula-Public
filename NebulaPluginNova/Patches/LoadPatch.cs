@@ -83,7 +83,7 @@ public static class LoadPatch
 
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-                string detailText = $"--STACKTRACE--\n{infoText}\n\n--ASSEMBLIES--\n{assemblies.Join(a => a.GetName().Name, "\n")}";
+                string detailText = $"--STACKTRACE--\n{errorText}\n\n--ASSEMBLIES--\n{assemblies.Join(a => a.GetName().Name, "\n")}";
 
                 var infoTextHolder = UnityHelper.CreateObject("InfoTextHolder",__instance.errorPopup.transform,infoText.transform.localPosition);
                 infoText.transform.SetParent(infoTextHolder.transform, true);
